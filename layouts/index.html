@@ -95,33 +95,33 @@
     {{ end }}
 
     <!-- Experience Section -->
-    {{ $experienceData := index site.Data .Language.Lang "experience" }}
-    {{ $experience := cond (and $experienceData $experienceData.experience) $experienceData.experience site.Params.experience }}
+    {{ $agendaData := index site.Data .Language.Lang "agenda" }}
+    {{ $agenda := cond (and $agendaData $agendaData.agenda) $agendaData.agenda site.Params.agenda }}
 
-    {{ with $experience }}
+    {{ with $agenda }}
     <section>
         <h2 class="text-4xl font-bold mb-5">{{ T "agendaTitle" }}</h2>
         <div class="space-y-4 max-w-3xl mx-auto">
             {{ range $index, $exp := . }}
             <div class="relative pl-8 before:content-[''] before:absolute before:left-0 before:top-0 before:w-[2px] before:h-full before:bg-gray-700 before:rounded-full">
-                {{ if eq .company "Open Source Contributor" }}
+                {{ if eq .speaker "Open Source Contributor" }}
                 <div class="absolute -left-1.5 top-0 w-3 h-3 bg-[#121212] border border-blue-400 rounded-full"></div>
                 {{ else }}
                 <div class="absolute -left-1.5 top-0 w-2 h-2 bg-gray-700 rounded-full"></div>
                 {{ end }}
                 <div class="text-gray-400 text-xl mb-1">
-                    {{ if .company_link }}
-                        <a href="{{ .company_link }}" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 font-medium hover:text-accent-light dark:hover:text-accent-dark transition-colors duration-200">
-                            {{ .company }}
+                    {{ if .speaker_link }}
+                        <a href="{{ .speaker_link }}" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 font-medium hover:text-accent-light dark:hover:text-accent-dark transition-colors duration-200">
+                            {{ .speaker }}
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-70 group-hover:opacity-100 transition-opacity duration-200">
                                 <path d="M7 17l9.2-9.2M17 17V7H7"/>
                             </svg>
                         </a>
                     {{ else }}
-                        {{ .company }}
+                        {{ .speaker }}
                     {{ end }}
                 </div>
-                <p class="text-2xl font-semibold">{{ .role }}</p>
+                <p class="text-2xl font-semibold">{{ .talk }}</p>
                 <p class="text-gray-400 font-semibold">{{ .period }}</p>
                 <p class="text-gray-400 text-sm">{{ if .country }} {{ .country }}{{ end }}</p>
                 <p class="mt-2">{{ .description }}</p>
@@ -130,7 +130,7 @@
         </div>
     </section>
     {{ else }}
-    {{ warnf "No experience data found for language %q. Please define either data/%s/experience.(yaml|toml|json) or params.experience in config." .Language.Lang .Language.Lang }}
+    {{ warnf "No agenda data found for language %q. Please define either data/%s/agenda.(yaml|toml|json) or params.agenda in config." .Language.Lang .Language.Lang }}
     {{ end }}
 
     <!-- trainings Section -->
@@ -194,7 +194,7 @@
             {{ range first 3 . }}
             <div class="group">
                 <p class="text-gray-400 text-sm mb-1">{{ .date }}</p>
-                <a href="{{ .link }}" class="block group" target="_blank">
+                <a href="{{ .link }}" class="block group">
                     <h3 class="inline-flex items-center text-xl font-medium text-accent-light dark:text-accent-dark hover:text-text-primary-light dark:hover:text-text-primary-dark transition-colors duration-200 mb-3">
                         {{ .title }}
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2 opacity-70 group-hover:opacity-100 transition-opacity duration-200">
