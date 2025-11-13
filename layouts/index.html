@@ -27,15 +27,15 @@
                         {{ if gt (len $period) 1 }}
                             {{ $start := index $period 0 }}
                             {{ $end := index $period 1 }}
-                            {{ $startStr := $start.Format "02 Jan 2006, 15:04" }}
-                            {{ $endStr := $end.Format "02 Jan 2006, 15:04" }}
+                            {{ $startStr := partial "format_datetime.html" (dict "date" $start "format" "datetime") }}
+                            {{ $endStr := partial "format_datetime.html" (dict "date" $end "format" "datetime") }}
                             {{ if eq $startStr $endStr }}
                                 {{ $startStr }}
                             {{ else }}
                                 {{ $startStr }} — {{ $endStr }}
                             {{ end }}
                         {{ else }}
-                            {{ (index $period 0).Format "02 Jan 2006, 15:04" }}
+                            {{ partial "format_datetime.html" (dict "date" (index $period 0) "format" "datetime") }}
                         {{ end }}
                     </span>
                     <span class="inline-flex items-center gap-2">
@@ -170,7 +170,7 @@
                     {{ end }}
                 </div>
                 <p class="text-2xl font-semibold">{{ .Title }}</p>
-                <p class="text-gray-400 font-semibold">{{ .Params.period | default (.Date.Format "02 Jan 2006") }}</p>
+                <p class="text-gray-400 font-semibold">{{ with .Params.period }}{{ . }}{{ else }}{{ partial "format_datetime.html" (dict "date" .Date "format" "date") }}{{ end }}</p>
                 <p class="text-gray-400 text-sm">{{ with .Params.country }}{{ . }}{{ end }}</p>
                 <p class="mt-2">{{ .Params.short_description | default .Summary }}</p>
             </div>
@@ -250,7 +250,7 @@
         <div class="space-y-8 max-w-3xl mx-auto">
             {{ range first 3 . }}
             <div class="group">
-                <p class="text-gray-400 text-sm mb-1">{{ .Date.Format "02 Jan 2006" }}</p>
+                <p class="text-gray-400 text-sm mb-1">{{ partial "format_datetime.html" (dict "date" .Date "format" "date") }}</p>
                 <a href="{{ .RelPermalink }}" class="block group">
                     <h3 class="inline-flex items-center text-xl font-medium text-accent-light dark:text-accent-dark hover:text-text-primary-light dark:hover:text-text-primary-dark transition-colors duration-200 mb-3">
                         {{ .Title }}

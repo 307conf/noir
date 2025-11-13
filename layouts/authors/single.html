@@ -27,7 +27,7 @@
             <article class="border border-border-primary-light dark:border-border-primary-dark rounded-xl p-5 bg-bg-primary-light dark:bg-bg-secondary-dark hover:border-accent-light dark:hover:border-accent-dark transition-all duration-300">
                 <div class="flex items-center gap-2 text-xs uppercase tracking-wide text-text-secondary-light dark:text-text-secondary-dark mb-2">
                     <span class="px-2 py-0.5 rounded-full bg-bg-tertiary-light dark:bg-bg-tertiary-dark">{{ $label }}</span>
-                    <span>{{ .Date.Format "02 Jan 2006" }}</span>
+                    <span>{{ partial "format_datetime.html" (dict "date" .Date "format" "date") }}</span>
                 </div>
                 <a href="{{ .RelPermalink }}" class="inline-flex items-center text-2xl font-semibold text-accent-light dark:text-accent-dark hover:text-text-primary-light dark:hover:text-text-primary-dark transition-colors duration-200">
                     {{ .Title }}

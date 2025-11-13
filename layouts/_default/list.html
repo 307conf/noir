@@ -11,7 +11,7 @@
             <p class="text-text-secondary-light dark:text-text-secondary-dark">{{ .Description }}</p>
             {{ end }}
             {{ if .Date }}
-            <time class="text-sm text-text-secondary-light dark:text-text-secondary-dark">{{ .Date.Format "January 2, 2006" }}</time>
+            <time class="text-sm text-text-secondary-light dark:text-text-secondary-dark">{{ partial "format_datetime.html" (dict "date" .Date "format" "date") }}</time>
             {{ end }}
         </article>
         {{ end }}
