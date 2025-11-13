@@ -130,14 +130,27 @@
         <h2 class="text-4xl font-bold mb-5">{{ T "agendaTitle" }}</h2>
         <div class="space-y-4 max-w-3xl mx-auto">
             {{ range . }}
-            {{ $speakerName := (or .Params.speaker_name (.Param "speaker")) }}
+            {{ $speakerName := (or .Params.speaker_name (.Param "speaker") "Unknown Speaker") }}
             {{ $speakerLink := .Params.speaker_link }}
+            
+            <!-- Try to find author page from authors field -->
             {{ $primaryAuthor := "" }}
             {{ with .Params.authors }}
-                {{ $primaryAuthor = index . 0 }}
+                {{ if gt (len .) 0 }}
+                    {{ $primaryAuthor = index . 0 }}
+                {{ end }}
             {{ end }}
-            {{ with $primaryAuthor }}
-                {{ with $.Site.GetPage (printf "%s/authors/%s" $.Language.Lang .) }}
+            
+            <!-- Search for author page using multiple path strategies -->
+            {{ if $primaryAuthor }}
+                {{ $authorPage := $.Site.GetPage (printf "%s/authors/%s" $.Language.Lang $primaryAuthor) }}
+                {{ if not $authorPage }}
+                    {{ $authorPage = $.Site.GetPage (printf "authors/%s" $primaryAuthor) }}
+                {{ end }}
+                {{ if not $authorPage }}
+                    {{ $authorPage = $.Site.GetPage (printf "%s/authors/%s.md" $.Language.Lang $primaryAuthor) }}
+                {{ end }}
+                {{ with $authorPage }}
                     {{ $speakerName = .Title }}
                     {{ $speakerLink = .RelPermalink }}
                 {{ end }}

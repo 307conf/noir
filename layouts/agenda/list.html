@@ -10,14 +10,27 @@
     {{ if $entries }}
     <div class="space-y-6">
         {{ range $entries }}
-        {{ $speakerName := (or .Params.speaker_name (.Param "speaker")) }}
+        {{ $speakerName := (or .Params.speaker_name (.Param "speaker") "Unknown Speaker") }}
         {{ $speakerLink := .Params.speaker_link }}
+        
+        <!-- Try to find author page from authors field -->
         {{ $primaryAuthor := "" }}
         {{ with .Params.authors }}
-            {{ $primaryAuthor = index . 0 }}
+            {{ if gt (len .) 0 }}
+                {{ $primaryAuthor = index . 0 }}
+            {{ end }}
         {{ end }}
-        {{ with $primaryAuthor }}
-            {{ with $.Site.GetPage (printf "%s/authors/%s" $.Language.Lang .) }}
+        
+        <!-- Search for author page using multiple path strategies -->
+        {{ if $primaryAuthor }}
+            {{ $authorPage := $.Site.GetPage (printf "%s/authors/%s" $.Language.Lang $primaryAuthor) }}
+            {{ if not $authorPage }}
+                {{ $authorPage = $.Site.GetPage (printf "authors/%s" $primaryAuthor) }}
+            {{ end }}
+            {{ if not $authorPage }}
+                {{ $authorPage = $.Site.GetPage (printf "%s/authors/%s.md" $.Language.Lang $primaryAuthor) }}
+            {{ end }}
+            {{ with $authorPage }}
                 {{ $speakerName = .Title }}
                 {{ $speakerLink = .RelPermalink }}
             {{ end }}
@@ -35,8 +48,8 @@
                 {{ end }}
             </div>
             <h2 class="text-2xl font-semibold">{{ .Title }}</h2>
-            <p class="text-gray-400 font-semibold">{{ .Params.period | default (.Date.Format "02 Jan 2006") }}</p>
-            <p class="text-gray-400 text-sm">{{ with .Params.country }}{{ . }}{{ end }}</p>
+            <p class="text-gray-400 font-semibold">{{ .Params.period | default (.Date.Format "02 Jan 2006, 01:00") }}</p>
+            <p class="text-gray-400 text-md">{{ with .Params.location }}{{ . }}{{ end }}</p>
             <div class="mt-2 text-text-primary-light dark:text-text-primary-dark">
                 {{ .Summary }}
             </div>
