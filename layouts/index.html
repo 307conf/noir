@@ -27,15 +27,15 @@
                         {{ if gt (len $period) 1 }}
                             {{ $start := index $period 0 }}
                             {{ $end := index $period 1 }}
-                            {{ $startStr := $start.Format "02 Jan 2006, 01:00" }}
-                            {{ $endStr := $end.Format "02 Jan 2006, 01:00" }}
+                            {{ $startStr := $start.Format "02 Jan 2006, 15:04" }}
+                            {{ $endStr := $end.Format "02 Jan 2006, 15:04" }}
                             {{ if eq $startStr $endStr }}
                                 {{ $startStr }}
                             {{ else }}
                                 {{ $startStr }} — {{ $endStr }}
                             {{ end }}
                         {{ else }}
-                            {{ (index $period 0).Format "02 Jan 2006, 10:00" }}
+                            {{ (index $period 0).Format "02 Jan 2006, 15:04" }}
                         {{ end }}
                     </span>
                     <span class="inline-flex items-center gap-2">
