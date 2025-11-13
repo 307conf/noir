@@ -2,14 +2,14 @@
 <head>
     <link rel="stylesheet" type='text/css' href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
 </head>
-<div class="w-full md:w-4/5 lg:w-3/5 mx-auto px-14 py-12">
+<div class="w-full md:w-4/5 lg:w-3/5 mx-auto py-2">
     <!-- Hero Section -->
     {{ $authorData := index site.Data .Language.Lang "author" }}
     {{ $author := cond (and $authorData $authorData.author) $authorData.author site.Params }}
     
     {{ with $author }}
-    <section class="mb-16">
-        <div class="max-w-3xl ml-0 p-4 pb-2 border border-border-primary-light dark:border-border-primary-dark rounded-lg bg-bg-secondary-light dark:bg-bg-secondary-dark shadow-lg relative">
+    <section class="mb-10">
+        <div class="p-4 pb-2 border border-border-primary-light dark:border-border-primary-dark rounded-lg bg-bg-secondary-light dark:bg-bg-secondary-dark shadow-lg relative">
             <div class="text-left">
                 <h1 class="text-4xl font-bold mb-2 text-text-primary-light dark:text-text-primary-dark">{{ .name }}</h1>
                 <p class="text-xl mb-6 text-text-primary-light dark:text-text-primary-dark">{{ .description }}</p>
@@ -51,52 +51,6 @@
     {{ warnf "Author data not found. Please check your site configuration." }}
     {{ end }}
 
-    <!-- sponsor Stack -->
-    {{ with (index site.Data .Language.Lang "sponsor") }}
-        <section class="mb-20">
-            <h2 class="text-4xl font-bold mb-2 relative">{{ T "sponsorsTitle" }}</h2>
-            <div class="sponsor-carousel">
-                <div class="carousel-container">
-                    <div class="carousel-track carousel-track-left-to-right">
-                        {{- range .row1 -}}
-                            <div class="carousel-item">
-                                <i class="{{ .icon }}"></i>
-                                <span class="text-xl">{{ .name }}</span>
-                            </div>
-                        {{- end -}}
-                        {{/* Duplicates */}}
-                        {{- range .row1 -}}
-                            <div class="carousel-item">
-                                <i class="{{ .icon }}"></i>
-                                <span class="text-xl">{{ .name }}</span>
-                            </div>
-                        {{- end -}}
-                    </div>
-                </div>
-
-                <div class="carousel-container -mt-1">
-                    <div class="carousel-track-reverse">
-                        {{- range .row2 -}}
-                            <div class="carousel-item">
-                                <i class="{{ .icon }}"></i>
-                                <span class="text-xl">{{ .name }}</span>
-                            </div>
-                        {{- end -}}
-                        {{/* Duplicates */}}
-                        {{- range .row2 -}}
-                            <div class="carousel-item">
-                                <i class="{{ .icon }}"></i>
-                                <span class="text-xl">{{ .name }}</span>
-                            </div>
-                        {{- end -}}
-                    </div>
-                </div>
-            </div>
-        </section>
-    {{ else }}
-        {{ warnf "No sponsor data found for language %q. Please define either data/%s/sponsor.(yaml|toml|json) or params.sponsor in config." .Language.Lang .Language.Lang }}
-    {{ end }}
-
     <!-- Experience Section -->
     {{ $agendaPages := where (where .Site.RegularPages "Section" "presentations") "Language.Lang" .Language.Lang }}
     {{ $agenda := sort $agendaPages "Date" "asc" }}
@@ -104,7 +58,7 @@
     {{ with $agenda }}
     <section>
         <h2 class="text-4xl font-bold mb-5">{{ T "agendaTitle" }}</h2>
-        <div class="space-y-4 max-w-3xl mx-auto">
+        <div class="space-y-0 mx-auto">
             {{ range . }}
             {{ $speakerName := (or .Params.speaker_name (.Param "speaker") "Unknown Speaker") }}
             {{ $speakerLink := .Params.speaker_link }}
@@ -259,6 +213,10 @@
     {{ else }}
     {{ warnf "No villages found for language %q. Add markdown files under content/%s/villages/." .Language.Lang .Language.Lang }}
     {{ end }}
+    <section class="mt-10 mb-10">
+    {{ $aboutData := index site.Data .Language.Lang "about" }}
+    {{ partial "supporters-card" (dict  "Title" (T "supportersLabel") "Supporters" $aboutData.supporters) }}
+    </section>
 </div>
 
 <style>

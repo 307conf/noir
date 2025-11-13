@@ -1,0 +1,45 @@
+ <!-- sponsor Stack -->
+    {{ with (index site.Data .Language.Lang "sponsor") }}
+        <section class="mb-20">
+            <h2 class="text-4xl font-bold mb-2 relative">{{ T "sponsorsTitle" }}</h2>
+            <div class="sponsor-carousel">
+                <div class="carousel-container">
+                    <div class="carousel-track carousel-track-left-to-right">
+                        {{- range .row1 -}}
+                            <div class="carousel-item">
+                                <i class="{{ .icon }}"></i>
+                                <span class="text-xl">{{ .name }}</span>
+                            </div>
+                        {{- end -}}
+                        {{/* Duplicates */}}
+                        {{- range .row1 -}}
+                            <div class="carousel-item">
+                                <i class="{{ .icon }}"></i>
+                                <span class="text-xl">{{ .name }}</span>
+                            </div>
+                        {{- end -}}
+                    </div>
+                </div>
+
+                <div class="carousel-container -mt-1">
+                    <div class="carousel-track-reverse">
+                        {{- range .row2 -}}
+                            <div class="carousel-item">
+                                <i class="{{ .icon }}"></i>
+                                <span class="text-xl">{{ .name }}</span>
+                            </div>
+                        {{- end -}}
+                        {{/* Duplicates */}}
+                        {{- range .row2 -}}
+                            <div class="carousel-item">
+                                <i class="{{ .icon }}"></i>
+                                <span class="text-xl">{{ .name }}</span>
+                            </div>
+                        {{- end -}}
+                    </div>
+                </div>
+            </div>
+        </section>
+    {{ else }}
+        {{ warnf "No sponsor data found for language %q. Please define either data/%s/sponsor.(yaml|toml|json) or params.sponsor in config." .Language.Lang .Language.Lang }}
+    {{ end }}
