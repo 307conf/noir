@@ -12,7 +12,7 @@
             {{- $img := or .image .logo .logo_url .logoImage | default "" -}}
             {{- $name := or .name .title .label | default "Supporter" -}}
             {{- $url := or .url .link .website | default "" -}}
-            <div class="flex flex-col items-center text-center max-w-[10rem]">
+            <div class="supporters-card flex flex-col items-center text-center max-w-[10rem]">
                 {{ if $url }}
                 <a href="{{ $url }}" target="_blank" rel="noopener noreferrer" class="block">
                 {{ end }}
@@ -25,12 +25,10 @@
                         {{ $initial | upper }}
                     </div>
                 {{ end }}
-
+                    <div class="mt-3 text-sm font-medium text-text-primary-light dark:text-text-primary-dark">{{ $name }}</div>
                 {{ if $url }}
                 </a>
                 {{ end }}
-
-                <div class="mt-3 text-sm font-medium text-text-primary-light dark:text-text-primary-dark">{{ $name }}</div>
             </div>
         {{- end }}
     </div>
