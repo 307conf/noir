@@ -14,18 +14,18 @@
             {{- $url := or .url .link .website | default "" -}}
             <div class="supporters-card flex flex-col items-center text-center max-w-[10rem]">
                 {{ if $url }}
-                <a href="{{ $url }}" target="_blank" rel="noopener noreferrer" class="block">
+                <a href="{{ $url }}" target="_blank" rel="noopener noreferrer" class="block w-full group cursor-pointer transition-transform duration-200 hover:scale-105">
                 {{ end }}
 
                 {{ if $img }}
-                    <img src="{{ $img }}" alt="{{ $name }}" class="w-20 h-20 rounded-full object-cover border border-border-secondary-light dark:border-border-secondary-dark shadow-sm mx-auto" />
+                    <img src="{{ $img }}" alt="{{ $name }}" class="w-20 h-20 rounded-full object-cover border border-border-secondary-light dark:border-border-secondary-dark shadow-sm mx-auto group-hover:shadow-lg group-hover:border-accent-light dark:group-hover:border-accent-dark transition-all duration-200" />
                 {{ else }}
-                    <div class="w-20 h-20 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-xl font-semibold text-gray-700 dark:text-gray-200">
+                    <div class="w-20 h-20 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-xl font-semibold text-gray-700 dark:text-gray-200 group-hover:bg-gray-300 dark:group-hover:bg-gray-600 transition-colors duration-200">
                         {{- $initial := substr $name 0 1 -}}
                         {{ $initial | upper }}
                     </div>
                 {{ end }}
-                    <div class="mt-3 text-sm font-medium text-text-primary-light dark:text-text-primary-dark">{{ $name }}</div>
+                    <div class="mt-3 text-sm font-medium text-text-primary-light dark:text-text-primary-dark group-hover:text-accent-light dark:group-hover:text-accent-dark transition-colors duration-200">{{ $name }}</div>
                 {{ if $url }}
                 </a>
                 {{ end }}

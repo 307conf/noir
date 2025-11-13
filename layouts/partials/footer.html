@@ -6,7 +6,7 @@
                 {{ $authorData := index site.Data .Language.Lang "author" }}                
                 {{ $author := cond (and $authorData $authorData.author) $authorData.author site.Params }}
                 {{ with $author }}
-                <p class="text-text-secondary-light dark:text-text-secondary-dark text-xm ">© {{ now.Format "2006" }} — {{ .name }}</p>
+                <p class="text-text-secondary-light dark:text-text-secondary-dark text-xm ">© {{ now.Format "2006" }} — {{ .name }} {{ .description }}</p>
                 <!-- <p class="text-text-secondary-light dark:text-text-secondary-dark text-xm pb-12">{{ T "builtUsing" }} <a href="https://gohugo.io/" target="_blank" class="animated-link text-accent-light dark:text-accent-dark hover:text-text-primary-light dark:hover:text-text-primary-dark">Hugo</a>. {{ T "takeALookAtMy" }} <a href="{{ .github }}" target="_blank" class="animated-link text-accent-light dark:text-accent-dark hover:text-text-primary-light dark:hover:text-text-primary-dark">GitHub</a></p> -->
                 {{ end }}
             </div>
