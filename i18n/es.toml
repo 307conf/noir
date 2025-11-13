@@ -36,3 +36,28 @@ other = "Próximamente."
 
 [publicationsTitle]
 other = "Presentaciones"
+
+[month.1]
+other = "Ene"
+[month.2]
+other = "Feb"
+[month.3]
+other = "Mar"
+[month.4]
+other = "Abr"
+[month.5]
+other = "May"
+[month.6]
+other = "Jun"
+[month.7]
+other = "Jul"
+[month.8]
+other = "Ago"
+[month.9]
+other = "Sep"
+[month.10]
+other = "Oct"
+[month.11]
+other = "Nov"
+[month.12]
+other = "Dic"

@@ -1,0 +1,34 @@
+{{/*
+  Partial: format_datetime.html
+  Usage: partial "format_datetime.html" (dict "date" $date "format" "datetime")
+  - If `date` is a string, returns it unchanged (useful when front matter uses 'TDB').
+  - Supports `format` = "date" or "datetime" (default datetime).
+  - Localizes month names using i18n keys `month.<n>` where n is 1..12.
+*/}}
+{{ $in := . }}
+{{ $date := $in.date }}
+{{ $fmt := cond (isset $in "format") $in.format "datetime" }}
+
+{{- /* If date is empty, return empty string */ -}}
+{{ if not $date }}
+  {{- "" -}}
+{{ else }}
+  {{- /* If date is already a string, print as-is */ -}}
+  {{ if (in (printf "%T" $date) "string") }}
+    {{- $date -}}
+  {{ else }}
+    {{- /* expect a time.Time object */ -}}
+    {{ $d := $date }}
+    {{ $day := printf "%02d" ($d.Day) }}
+    {{ $monthNum := int ($d.Month) }}
+    {{ $monthName := i18n (printf "month.%d" $monthNum) }}
+    {{ $year := $d.Year }}
+    {{ if eq $fmt "date" }}
+      {{- printf "%s %s %d" $day $monthName $year -}}
+    {{ else }}
+      {{ $hour := printf "%02d" ($d.Hour) }}
+      {{ $min := printf "%02d" ($d.Minute) }}
+      {{- printf "%s %s %d, %s:%s" $day $monthName $year $hour $min -}}
+    {{ end }}
+  {{ end }}
+{{ end }}
