@@ -30,3 +30,9 @@ other = "Take a look at my"
 
 [supportersLabel]
 other = "Supporters"
+
+[noEntriesYet]
+other = "Entries coming soon."
+
+[publicationsTitle]
+other = "Presentations"

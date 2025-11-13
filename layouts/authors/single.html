@@ -1,0 +1,49 @@
+{{ define "main" }}
+{{ $authorSlug := cond (isset .Params "slug") .Params.slug .File.TranslationBaseName }}
+{{ $publications := where (where .Site.RegularPages "Lang" .Lang) "Params.authors" "intersect" (slice $authorSlug) }}
+{{ $publications = sort $publications "Date" "desc" }}
+{{ $sectionLabels := dict "agenda" (T "agendaTitle") "presentations" (T "agendaTitle") "trainings" (T "trainingsTitle") "villages" (T "villagesTitle") }}
+
+<div class="max-w-4xl mx-auto px-4 py-12">
+    <div class="bg-bg-primary-light dark:bg-bg-secondary-dark border border-border-primary-light dark:border-border-primary-dark rounded-2xl p-8 mb-10 shadow-lg">
+        {{ with .Params.role }}
+        <p class="text-sm uppercase tracking-wide text-text-secondary-light dark:text-text-secondary-dark mb-2">{{ . }}</p>
+        {{ end }}
+        <h1 class="text-4xl md:text-5xl font-bold text-text-primary-light dark:text-text-primary-dark mb-4">{{ .Title }}</h1>
+        {{ with .Description }}
+        <p class="text-text-secondary-light dark:text-text-secondary-dark text-lg mb-4">{{ . }}</p>
+        {{ end }}
+        <div class="prose prose-invert max-w-none">
+            {{ .Content }}
+        </div>
+    </div>
+
+    <section class="mt-12">
+        <h2 class="text-3xl font-bold mb-6 text-text-primary-light dark:text-text-primary-dark">{{ T "publicationsTitle" }}</h2>
+        {{ if $publications }}
+        <div class="space-y-5">
+            {{ range $publications }}
+            {{ $label := index $sectionLabels .Section | default (title .Section) }}
+            <article class="border border-border-primary-light dark:border-border-primary-dark rounded-xl p-5 bg-bg-primary-light dark:bg-bg-secondary-dark hover:border-accent-light dark:hover:border-accent-dark transition-all duration-300">
+                <div class="flex items-center gap-2 text-xs uppercase tracking-wide text-text-secondary-light dark:text-text-secondary-dark mb-2">
+                    <span class="px-2 py-0.5 rounded-full bg-bg-tertiary-light dark:bg-bg-tertiary-dark">{{ $label }}</span>
+                    <span>{{ .Date.Format "02 Jan 2006" }}</span>
+                </div>
+                <a href="{{ .RelPermalink }}" class="inline-flex items-center text-2xl font-semibold text-accent-light dark:text-accent-dark hover:text-text-primary-light dark:hover:text-text-primary-dark transition-colors duration-200">
+                    {{ .Title }}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2">
+                        <path d="M7 17l9.2-9.2M17 17V7H7"/>
+                    </svg>
+                </a>
+                <p class="text-text-secondary-light dark:text-text-secondary-dark mt-2">
+                    {{ .Summary | default (.Params.short_description | default .Description) }}
+                </p>
+            </article>
+            {{ end }}
+        </div>
+        {{ else }}
+            <p class="text-text-secondary-light dark:text-text-secondary-dark">{{ T "noEntriesYet" }}</p>
+        {{ end }}
+    </section>
+</div>
+{{ end }}

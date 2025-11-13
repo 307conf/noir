@@ -12,11 +12,38 @@
         <div class="max-w-3xl ml-0 p-4 pb-2 border border-border-primary-light dark:border-border-primary-dark rounded-lg bg-bg-secondary-light dark:bg-bg-secondary-dark shadow-lg relative">
             <div class="text-left">
                 <h1 class="text-4xl font-bold mb-2 text-text-primary-light dark:text-text-primary-dark">{{ .name }}</h1>
-                <p class="text-gray-400 mb-3 flex items-center text-xl">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="text-gray-400" width="24" height="24" viewBox="-7 -2 24 24"><path fill="currentColor" d="M4 9.9A5.002 5.002 0 0 1 5 0a5 5 0 0 1 1 9.9V19a1 1 0 0 1-2 0V9.9zM5 8a3 3 0 1 0 0-6a3 3 0 0 0 0 6z"/></svg>
-                    {{ .location }}
-                </p>
                 <p class="text-xl mb-6 text-text-primary-light dark:text-text-primary-dark">{{ .description }}</p>
+                <p class="text-gray-400 mb-3 flex items-center text-xl gap-6">
+                    {{ $period := or .period site.Params.period }}
+                    {{ if $period }}
+                    <span class="inline-flex items-center gap-2 text-xl text-gray-400">
+                        <!-- calendar/period icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="opacity-90">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke="currentColor" fill="none"></rect>
+                            <path d="M16 2v4M8 2v4" stroke="currentColor"></path>
+                            <path d="M3 10h18" stroke="currentColor"></path>
+                            <path d="M8 14h4v4" stroke="currentColor"></path>
+                        </svg>
+                        {{ if gt (len $period) 1 }}
+                            {{ $start := index $period 0 }}
+                            {{ $end := index $period 1 }}
+                            {{ $startStr := $start.Format "02 Jan 2006, 01:00" }}
+                            {{ $endStr := $end.Format "02 Jan 2006, 01:00" }}
+                            {{ if eq $startStr $endStr }}
+                                {{ $startStr }}
+                            {{ else }}
+                                {{ $startStr }} — {{ $endStr }}
+                            {{ end }}
+                        {{ else }}
+                            {{ (index $period 0).Format "02 Jan 2006, 10:00" }}
+                        {{ end }}
+                    </span>
+                    <span class="inline-flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="text-gray-400" width="24" height="24" viewBox="-7 -2 24 24"><path fill="currentColor" d="M4 9.9A5.002 5.002 0 0 1 5 0a5 5 0 0 1 1 9.9V19a1 1 0 0 1-2 0V9.9zM5 8a3 3 0 1 0 0-6a3 3 0 0 0 0 6z"/></svg>
+                        {{ .location }}
+                    </span>
+                    {{ end }}
+                </p>
             </div>
             <!-- Social Icons - Moved to bottom for mobile -->
             <div class="mt-8 md:mt-0 flex flex-wrap justify-center gap-3 md:absolute md:top-4 md:right-4 md:flex-nowrap md:justify-end md:mt-0">
@@ -91,51 +118,59 @@
             </div>
         </section>
     {{ else }}
-        {{ warnf "No sponsor data found for language %q. Please define either data/%s/sponsor.(yaml|toml|json) or params.sponsor in config." .Language.Lang }}
+        {{ warnf "No sponsor data found for language %q. Please define either data/%s/sponsor.(yaml|toml|json) or params.sponsor in config." .Language.Lang .Language.Lang }}
     {{ end }}
 
     <!-- Experience Section -->
-    {{ $agendaData := index site.Data .Language.Lang "agenda" }}
-    {{ $agenda := cond (and $agendaData $agendaData.agenda) $agendaData.agenda site.Params.agenda }}
+    {{ $agendaPages := where (where .Site.RegularPages "Section" "presentations") "Language.Lang" .Language.Lang }}
+    {{ $agenda := sort $agendaPages "Date" "asc" }}
 
     {{ with $agenda }}
     <section>
         <h2 class="text-4xl font-bold mb-5">{{ T "agendaTitle" }}</h2>
         <div class="space-y-4 max-w-3xl mx-auto">
-            {{ range $index, $exp := . }}
-            <div class="relative pl-8 before:content-[''] before:absolute before:left-0 before:top-0 before:w-[2px] before:h-full before:bg-gray-700 before:rounded-full">
-                {{ if eq .speaker "Open Source Contributor" }}
-                <div class="absolute -left-1.5 top-0 w-3 h-3 bg-[#121212] border border-blue-400 rounded-full"></div>
-                {{ else }}
-                <div class="absolute -left-1.5 top-0 w-2 h-2 bg-gray-700 rounded-full"></div>
+            {{ range . }}
+            {{ $speakerName := (or .Params.speaker_name (.Param "speaker")) }}
+            {{ $speakerLink := .Params.speaker_link }}
+            {{ $primaryAuthor := "" }}
+            {{ with .Params.authors }}
+                {{ $primaryAuthor = index . 0 }}
+            {{ end }}
+            {{ with $primaryAuthor }}
+                {{ with $.Site.GetPage (printf "%s/authors/%s" $.Language.Lang .) }}
+                    {{ $speakerName = .Title }}
+                    {{ $speakerLink = .RelPermalink }}
                 {{ end }}
+            {{ end }}
+            <div class="relative pl-8 before:content-[''] before:absolute before:left-0 before:top-0 before:w-[2px] before:h-full before:bg-gray-700 before:rounded-full">
+                <div class="absolute -left-1.5 top-0 w-2 h-2 bg-gray-700 rounded-full"></div>
                 <div class="text-gray-400 text-xl mb-1">
-                    {{ if .speaker_link }}
-                        <a href="{{ .speaker_link }}" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 font-medium hover:text-accent-light dark:hover:text-accent-dark transition-colors duration-200">
-                            {{ .speaker }}
+                    {{ if $speakerLink }}
+                        <a href="{{ $speakerLink }}" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 font-medium hover:text-accent-light dark:hover:text-accent-dark transition-colors duration-200">
+                            {{ $speakerName }}
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-70 group-hover:opacity-100 transition-opacity duration-200">
                                 <path d="M7 17l9.2-9.2M17 17V7H7"/>
                             </svg>
                         </a>
                     {{ else }}
-                        {{ .speaker }}
+                        {{ $speakerName }}
                     {{ end }}
                 </div>
-                <p class="text-2xl font-semibold">{{ .talk }}</p>
-                <p class="text-gray-400 font-semibold">{{ .period }}</p>
-                <p class="text-gray-400 text-sm">{{ if .country }} {{ .country }}{{ end }}</p>
-                <p class="mt-2">{{ .description }}</p>
+                <p class="text-2xl font-semibold">{{ .Title }}</p>
+                <p class="text-gray-400 font-semibold">{{ .Params.period | default (.Date.Format "02 Jan 2006") }}</p>
+                <p class="text-gray-400 text-sm">{{ with .Params.country }}{{ . }}{{ end }}</p>
+                <p class="mt-2">{{ .Params.short_description | default .Summary }}</p>
             </div>
             {{ end }}
         </div>
     </section>
     {{ else }}
-    {{ warnf "No agenda data found for language %q. Please define either data/%s/agenda.(yaml|toml|json) or params.agenda in config." .Language.Lang .Language.Lang }}
+    {{ warnf "No agenda entries found for language %q. Add markdown files under content/%s/agenda/." .Language.Lang .Language.Lang }}
     {{ end }}
 
     <!-- trainings Section -->
-    {{ $trainingsData := index site.Data .Language.Lang "trainings" }}
-    {{ $trainings := cond (and $trainingsData $trainingsData.trainings) $trainingsData.trainings site.Params.trainings }}
+    {{ $trainingsPages := where (where .Site.RegularPages "Section" "trainings") "Language.Lang" .Language.Lang }}
+    {{ $trainings := sort $trainingsPages "Weight" "asc" }}
 
     {{ with $trainings }}
     <section class="mt-12 md:mt-20 mb-12 md:mb-20">
@@ -144,25 +179,34 @@
         </div>
         <div class="grid grid-cols-1 gap-6 md:gap-8 max-w-3xl mx-auto">
             {{ range first 2 . }}
+            {{ $image := .Params.image | default "/images/placeholders/training.jpg" }}
+            {{ $link := .Params.link | default .RelPermalink }}
+            {{ $sponsors := .Params.sponsors }}
+            {{ if not (and $sponsors (gt (len $sponsors) 0)) }}
+                {{ with .Params.sponsor }}
+                    {{ $sponsors = (slice .) }}
+                {{ end }}
+            {{ end }}
             <div class="project-card relative overflow-hidden rounded-lg bg-[#121212] border border-gray-700 transition-all duration-300 group">
                 <div class="aspect-w-16 aspect-h-9 overflow-hidden relative">
                     <div class="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 z-10"></div>
-                    <img src="{{ .image }}" alt="{{ .title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                    <img src="{{ $image }}" alt="{{ .Title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-60 z-20"></div>
                     
                     <!-- Content that moves up on hover -->
                     <div class="absolute inset-0 z-30 p-4 pb-3 md:p-6 md:pb-4 flex flex-col justify-end transform transition-transform duration-500 translate-y-0 group-hover:translate-y-[-20px]">
-                        <h3 class="text-xl md:text-2xl font-bold mb-1.5 md:mb-2 text-white line-clamp-2">{{ .title }}</h3>
+                        <h3 class="text-xl md:text-2xl font-bold mb-1.5 md:mb-2 text-white line-clamp-2">{{ .Title }}</h3>
                         <div class="hidden sm:flex flex-wrap gap-1 md:gap-2 mb-1.5 md:mb-3">
-                            {{ $sponsors := split .sponsor "," }}
-                            {{ range $sponsor := $sponsors }}
-                            <span class="px-1.5 md:px-2 py-0.5 bg-black/30 backdrop-blur-sm rounded-md text-[10px] md:text-xs font-medium text-white">{{ $sponsor }}</span>
+                            {{ with $sponsors }}
+                                {{ range . }}
+                                    <span class="px-1.5 md:px-2 py-0.5 bg-black/30 backdrop-blur-sm rounded-md text-[10px] md:text-xs font-medium text-white">{{ . }}</span>
+                                {{ end }}
                             {{ end }}
                         </div>
-                        <p class="hidden md:block text-sm text-white mb-3 line-clamp-3 md:line-clamp-4">{{ .description }}</p>
+                        <p class="hidden md:block text-sm text-white mb-3 line-clamp-3 md:line-clamp-4">{{ .Params.short_description | default .Summary }}</p>
                         
                         <!-- Learn More button -->
-                        <a href="{{ .link }}" class="bg-white/90 backdrop-blur-sm hover:bg-white text-black text-xs md:text-sm font-medium py-1 md:py-1.5 px-2 md:px-3 rounded-md inline-block transition-all duration-300 transform opacity-100 md:opacity-0 group-hover:opacity-100 w-fit flex items-center shadow-lg hover:shadow-xl">
+                        <a href="{{ $link }}" class="bg-white/90 backdrop-blur-sm hover:bg-white text-black text-xs md:text-sm font-medium py-1 md:py-1.5 px-2 md:px-3 rounded-md inline-block transition-all duration-300 transform opacity-100 md:opacity-0 group-hover:opacity-100 w-fit flex items-center shadow-lg hover:shadow-xl">
                             {{ T "learnMore" }}
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 ml-1 transform group-hover:translate-x-1 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -178,12 +222,12 @@
         </div>
     </section>
     {{ else }}
-    {{ warnf "No project data found for language %q. Please define either data/%s/trainings.(yaml|toml|json) or params.trainings in config." .Language.Lang .Language.Lang }}
+    {{ warnf "No training entries found for language %q. Add markdown files under content/%s/trainings/." .Language.Lang .Language.Lang }}
     {{ end }}
 
     <!-- Blog Section -->
-    {{ $villagesData := index site.Data .Language.Lang "villages" }}
-    {{ $villages := cond (and $villagesData $villagesData.villages) $villagesData.villages site.Params.villages }}
+    {{ $villagesPages := where (where .Site.RegularPages "Section" "villages") "Language.Lang" .Language.Lang }}
+    {{ $villages := sort $villagesPages "Date" "asc" }}
     
     {{ with $villages }}
     <section class="mt-20 mb-20">
@@ -193,16 +237,16 @@
         <div class="space-y-8 max-w-3xl mx-auto">
             {{ range first 3 . }}
             <div class="group">
-                <p class="text-gray-400 text-sm mb-1">{{ .date }}</p>
-                <a href="{{ .link }}" class="block group">
+                <p class="text-gray-400 text-sm mb-1">{{ .Date.Format "02 Jan 2006" }}</p>
+                <a href="{{ .RelPermalink }}" class="block group">
                     <h3 class="inline-flex items-center text-xl font-medium text-accent-light dark:text-accent-dark hover:text-text-primary-light dark:hover:text-text-primary-dark transition-colors duration-200 mb-3">
-                        {{ .title }}
+                        {{ .Title }}
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2 opacity-70 group-hover:opacity-100 transition-opacity duration-200">
                             <path d="M7 17l9.2-9.2M17 17V7H7"/>
                         </svg>
                     </h3>
                 </a>    
-                <p class="text-gray-400">{{ .summary }}</p>
+                <p class="text-gray-400">{{ .Summary | default .Params.summary }}</p>
             </div>
             {{ end }}
         </div>
@@ -211,7 +255,7 @@
         </div>
     </section>
     {{ else }}
-    {{ warnf "No blog data found for language %q. Please define either data/%s/villages.(yaml|toml|json) or params.villages in config." .Language.Lang .Language.Lang }}
+    {{ warnf "No villages found for language %q. Add markdown files under content/%s/villages/." .Language.Lang .Language.Lang }}
     {{ end }}
 </div>
 

@@ -30,3 +30,9 @@ other = "Echa un vistazo a mi"
 
 [supportersLabel]
 other = "Apoiadores"
+
+[noEntriesYet]
+other = "Próximamente."
+
+[publicationsTitle]
+other = "Presentaciones"

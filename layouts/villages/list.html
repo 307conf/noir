@@ -1,0 +1,33 @@
+{{ define "main" }}
+<div class="max-w-4xl mx-auto px-4 py-12">
+    <h1 class="text-4xl md:text-5xl font-bold mb-6 text-text-primary-light dark:text-text-primary-dark">{{ .Title }}</h1>
+    {{ with .Content }}
+        <div class="prose prose-invert mb-10">{{ . }}</div>
+    {{ end }}
+
+    {{ $villages := sort .Pages "Date" "asc" }}
+    {{ if $villages }}
+    <div class="space-y-8">
+        {{ range $villages }}
+        <article class="group border border-border-primary-light dark:border-border-primary-dark rounded-lg p-5 bg-bg-primary-light dark:bg-bg-secondary-dark transition-all duration-300 hover:border-accent-light dark:hover:border-accent-dark">
+            <p class="text-gray-400 text-sm mb-1">{{ .Date.Format "02 Jan 2006" }}</p>
+            <a href="{{ .RelPermalink }}" class="inline-flex items-center text-2xl font-semibold text-accent-light dark:text-accent-dark hover:text-text-primary-light dark:hover:text-text-primary-dark">
+                {{ .Title }}
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2 opacity-70 group-hover:opacity-100 transition-opacity duration-200"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
+            </a>
+            {{ with .Params.tags }}
+            <div class="flex flex-wrap gap-2 mt-3">
+                {{ range . }}
+                    <span class="px-2 py-1 bg-bg-tertiary-light dark:bg-bg-tertiary-dark rounded-md text-xs text-text-secondary-light dark:text-text-secondary-dark">{{ . }}</span>
+                {{ end }}
+            </div>
+            {{ end }}
+            <p class="text-text-secondary-light dark:text-text-secondary-dark mt-3">{{ .Summary | default .Params.summary }}</p>
+        </article>
+        {{ end }}
+    </div>
+    {{ else }}
+        <p class="text-text-secondary-light dark:text-text-secondary-dark">{{ T "noEntriesYet" }}</p>
+    {{ end }}
+</div>
+{{ end }}

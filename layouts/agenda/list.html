@@ -1,0 +1,51 @@
+{{ define "main" }}
+<div class="max-w-4xl mx-auto px-4 py-12">
+    <h1 class="text-4xl md:text-5xl font-bold mb-6 text-text-primary-light dark:text-text-primary-dark">{{ .Title }}</h1>
+    {{ with .Content }}
+        <div class="prose prose-invert mb-10">{{ . }}</div>
+    {{ end }}
+
+    {{ $presentations := where (where .Site.RegularPages "Section" "presentations") "Language.Lang" .Language.Lang }}
+    {{ $entries := sort $presentations "Date" "asc" }}
+    {{ if $entries }}
+    <div class="space-y-6">
+        {{ range $entries }}
+        {{ $speakerName := (or .Params.speaker_name (.Param "speaker")) }}
+        {{ $speakerLink := .Params.speaker_link }}
+        {{ $primaryAuthor := "" }}
+        {{ with .Params.authors }}
+            {{ $primaryAuthor = index . 0 }}
+        {{ end }}
+        {{ with $primaryAuthor }}
+            {{ with $.Site.GetPage (printf "%s/authors/%s" $.Language.Lang .) }}
+                {{ $speakerName = .Title }}
+                {{ $speakerLink = .RelPermalink }}
+            {{ end }}
+        {{ end }}
+        <article class="relative pl-8 before:content-[''] before:absolute before:left-0 before:top-0 before:w-[2px] before:h-full before:bg-gray-700 before:rounded-full">
+            <div class="absolute -left-1.5 top-0 w-2 h-2 bg-gray-700 rounded-full"></div>
+            <div class="text-gray-400 text-lg mb-1">
+                {{ if $speakerLink }}
+                    <a href="{{ $speakerLink }}" class="group inline-flex items-center gap-2 font-medium hover:text-accent-light dark:hover:text-accent-dark transition-colors duration-200">
+                        {{ $speakerName }}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-70 group-hover:opacity-100 transition-opacity duration-200"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
+                    </a>
+                {{ else }}
+                    {{ $speakerName }}
+                {{ end }}
+            </div>
+            <h2 class="text-2xl font-semibold">{{ .Title }}</h2>
+            <p class="text-gray-400 font-semibold">{{ .Params.period | default (.Date.Format "02 Jan 2006") }}</p>
+            <p class="text-gray-400 text-sm">{{ with .Params.country }}{{ . }}{{ end }}</p>
+            <div class="mt-2 text-text-primary-light dark:text-text-primary-dark">
+                {{ .Summary }}
+            </div>
+            <a href="{{ .RelPermalink }}" class="inline-flex items-center text-sm text-blue-400 hover:text-blue-300 mt-3">{{ T "learnMore" }}<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg></a>
+        </article>
+        {{ end }}
+    </div>
+    {{ else }}
+        <p class="text-text-secondary-light dark:text-text-secondary-dark">{{ T "noEntriesYet" | default "Entries coming soon." }}</p>
+    {{ end }}
+</div>
+{{ end }}
