@@ -56,10 +56,11 @@
     {{ $agenda := sort $agendaPages "Date" "asc" }}
 
     {{ with $agenda }}
+    {{ $agendaCount := len . }}
     <section>
         <h2 class="text-4xl font-bold mb-5">{{ T "agendaTitle" }}</h2>
         <div class="space-y-0 mx-auto">
-            {{ range . }}
+            {{ range $index, $entry := . }}
             {{ $speakerName := (or .Params.speaker_name (.Param "speaker") "Unknown Speaker") }}
             {{ $speakerLink := .Params.speaker_link }}
             
@@ -85,7 +86,15 @@
                     {{ $speakerLink = .RelPermalink }}
                 {{ end }}
             {{ end }}
-            <div class="relative pl-8 before:content-[''] before:absolute before:left-0 before:top-0 before:w-[2px] before:h-full before:bg-gray-700 before:rounded-full">
+            {{ $spacingClasses := "" }}
+            {{ if lt $index (sub $agendaCount 1) }}
+                {{ $spacingClasses = "pb-6 md:pb-7 border-b border-gray-800 dark:border-gray-700" }}
+            {{ end }}
+            {{ $topSpacing := "" }}
+            {{ if gt $index 0 }}
+                {{ $topSpacing = "pt-4 md:pt-5" }}
+            {{ end }}
+            <div class="relative pl-8 before:content-[''] before:absolute before:left-0 before:top-0 before:w-[2px] before:h-full before:bg-gray-700 before:rounded-full {{ $spacingClasses }} {{ $topSpacing }}">
                 <div class="absolute -left-1.5 top-0 w-2 h-2 bg-gray-700 rounded-full"></div>
                 <div class="text-gray-400 text-xl mb-1">
                     {{ if $speakerLink }}
