@@ -37,6 +37,15 @@ other = "Entries coming soon."
 [presentationsTitle]
 other = "Presentations"
 
+[fullAddressLabel]
+other = "Full Address"
+
+[openInMaps]
+other = "View on Maps"
+
+[eventDateLabel]
+other = "Event date"
+
 [month.1]
 other = "Jan"
 [month.2]

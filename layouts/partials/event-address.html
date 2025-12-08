@@ -1,0 +1,36 @@
+{{- $location := .Site.Params.location -}}
+{{- $fullAddress := .Site.Params.full_address -}}
+{{- if $fullAddress }}
+    {{- $mapLink := printf "https://www.google.com/maps/search/?api=1&query=%s" ($fullAddress | urlquery) -}}
+    <section class="mt-8 md:mt-12 mb-8">
+        <div class="relative overflow-hidden rounded-xl border border-border-primary-light dark:border-border-primary-dark bg-bg-secondary-light dark:bg-bg-secondary-dark p-6 md:p-7 shadow-lg">
+            <div class="absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-blue-500 via-cyan-400 to-purple-500 opacity-80"></div>
+            <div class="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+                <div class="flex items-start gap-4">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-full border border-blue-100 bg-blue-50 text-blue-700 shadow-sm dark:border-blue-900 dark:bg-blue-500/10 dark:text-blue-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 21s7-4.35 7-10a7 7 0 1 0-14 0c0 5.65 7 10 7 10z" />
+                            <circle cx="12" cy="11" r="2.5" />
+                        </svg>
+                    </div>
+                    <div class="space-y-2">
+                        <p class="text-xs font-semibold uppercase tracking-[0.25em] text-blue-600 dark:text-blue-300">{{ T "fullAddressLabel" }}</p>
+                        {{- if $location }}
+                            <h3 class="text-2xl font-bold leading-snug text-text-primary-light dark:text-text-primary-dark">{{ $location }}</h3>
+                        {{- end }}
+                        <p class="text-base text-text-secondary-light dark:text-text-secondary-dark">{{ $fullAddress }}</p>
+                    </div>
+                </div>
+                <div class="flex items-start md:items-center">
+                    <a href="{{ $mapLink }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 transition-transform duration-200 hover:-translate-y-0.5 hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-bg-secondary-light dark:focus:ring-offset-bg-secondary-dark">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 21s7-4.35 7-10a7 7 0 1 0-14 0c0 5.65 7 10 7 10z" />
+                            <circle cx="12" cy="11" r="2.5" />
+                        </svg>
+                        {{ T "openInMaps" }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+{{- end }}

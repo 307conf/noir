@@ -226,6 +226,7 @@
     {{ $aboutData := index site.Data .Language.Lang "about" }}
     {{ partial "supporters-card" (dict  "Title" (T "supportersLabel") "Supporters" $aboutData.supporters) }}
     </section>
+    {{ partial "event-address.html" . }}
 </div>
 
 <style>
