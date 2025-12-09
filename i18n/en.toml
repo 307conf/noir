@@ -46,6 +46,21 @@ other = "View on Maps"
 [eventDateLabel]
 other = "Event date"
 
+[talkTimeLabel]
+other = "Time"
+
+[talkTitleLabel]
+other = "Talk"
+
+[speakerLabel]
+other = "Speaker"
+
+[trackLabel]
+other = "Track"
+
+[locationLabel]
+other = "Location"
+
 [month.1]
 other = "Jan"
 [month.2]

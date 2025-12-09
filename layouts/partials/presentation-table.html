@@ -1,0 +1,108 @@
+{{- /*
+Reusable table layout for listing presentations/talks.
+Params:
+- Pages: slice of pages to render.
+- ShowTracks: bool (default true)
+- ShowLocation: bool (default true)
+*/ -}}
+{{- $pages := .Pages | default (slice) -}}
+{{- $showTracks := cond (isset . "ShowTracks") .ShowTracks true -}}
+{{- $showLocation := cond (isset . "ShowLocation") .ShowLocation true -}}
+{{- $entries := sort $pages "Date" "asc" -}}
+
+{{- if gt (len $entries) 0 }}
+<div class="overflow-hidden rounded-xl border border-border-primary-light dark:border-border-primary-dark bg-bg-primary-light dark:bg-bg-secondary-dark shadow-sm">
+    <div class="hidden md:block overflow-x-auto">
+        <table class="min-w-full text-left text-sm">
+            <thead class="bg-bg-secondary-light dark:bg-bg-secondary-dark">
+                <tr class="text-text-secondary-light dark:text-text-secondary-dark">
+                    <th class="px-4 py-3 font-semibold uppercase tracking-wide text-[11px]">{{ T "talkTimeLabel" }}</th>
+                    <th class="px-4 py-3 font-semibold uppercase tracking-wide text-[11px]">{{ T "speakerLabel" }}</th>
+                    <th class="px-4 py-3 font-semibold uppercase tracking-wide text-[11px]">{{ T "talkTitleLabel" }}</th>
+                    {{ if $showTracks }}<th class="px-4 py-3 font-semibold uppercase tracking-wide text-[11px]">{{ T "trackLabel" }}</th>{{ end }}
+                    {{ if $showLocation }}<th class="px-4 py-3 font-semibold uppercase tracking-wide text-[11px]">{{ T "locationLabel" }}</th>{{ end }}
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-border-primary-light dark:divide-border-primary-dark text-text-primary-light dark:text-text-primary-dark">
+                {{ range $entries }}
+                {{ $author := partial "presentation-author.html" . }}
+                {{ $entryTracks := slice }}
+                {{ with .Params.tracks }}{{ range . }}{{ $entryTracks = $entryTracks | append . }}{{ end }}{{ end }}
+                {{ with .Params.track }}{{ $entryTracks = $entryTracks | append . }}{{ end }}
+                <tr class="hover:bg-bg-secondary-light/60 dark:hover:bg-bg-secondary-dark/60 transition-colors duration-150">
+                    <td class="px-4 py-3 whitespace-nowrap align-top text-sm text-text-secondary-light dark:text-text-secondary-dark">
+                        {{ with .Params.period }}{{ . }}{{ else }}{{ partial "format_datetime.html" (dict "date" .Date "format" "datetime") }}{{ end }}
+                    </td>
+                    <td class="px-4 py-3 align-top text-sm text-text-secondary-light dark:text-text-secondary-dark">
+                        {{ if $author.Link }}
+                            <a href="{{ $author.Link }}" class="inline-flex items-center gap-1 font-semibold hover:text-accent-light dark:hover:text-accent-dark transition-colors duration-200">
+                                {{ $author.Name }}
+                            </a>
+                        {{ else }}
+                            {{ $author.Name }}
+                        {{ end }}
+                    </td>
+                    <td class="px-4 py-3 align-top">
+                        <a href="{{ .RelPermalink }}" class="font-semibold hover:text-accent-light dark:hover:text-accent-dark transition-colors duration-200">{{ .Title }}</a>
+                        <div class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-1 line-clamp-2">{{ .Params.short_description | default .Summary }}</div>
+                    </td>
+                    {{ if $showTracks }}
+                    <td class="px-4 py-3 align-top">
+                        {{ if gt (len $entryTracks) 0 }}
+                        <div class="flex flex-wrap gap-2">
+                            {{ range uniq $entryTracks }}
+                                <span class="px-2 py-1 rounded-md bg-bg-tertiary-light dark:bg-bg-tertiary-dark text-[11px] font-semibold uppercase tracking-wide text-text-secondary-light dark:text-text-secondary-dark">{{ . }}</span>
+                            {{ end }}
+                        </div>
+                        {{ end }}
+                    </td>
+                    {{ end }}
+                    {{ if $showLocation }}
+                    <td class="px-4 py-3 align-top text-sm text-text-secondary-light dark:text-text-secondary-dark">{{ with .Params.location }}{{ . }}{{ end }}</td>
+                    {{ end }}
+                </tr>
+                {{ end }}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Mobile stacked list -->
+    <div class="md:hidden divide-y divide-border-primary-light dark:divide-border-primary-dark">
+        {{ range $entries }}
+        {{ $author := partial "presentation-author.html" . }}
+        {{ $entryTracks := slice }}
+        {{ with .Params.tracks }}{{ range . }}{{ $entryTracks = $entryTracks | append . }}{{ end }}{{ end }}
+        {{ with .Params.track }}{{ $entryTracks = $entryTracks | append . }}{{ end }}
+        <div class="p-4">
+            <div class="text-xs uppercase tracking-wide text-text-secondary-light dark:text-text-secondary-dark mb-1">
+                {{ with .Params.period }}{{ . }}{{ else }}{{ partial "format_datetime.html" (dict "date" .Date "format" "datetime") }}{{ end }}
+            </div>
+            <a href="{{ .RelPermalink }}" class="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark hover:text-accent-light dark:hover:text-accent-dark transition-colors duration-200">{{ .Title }}</a>
+            <div class="text-sm text-text-secondary-light dark:text-text-secondary-dark mt-1">
+                {{ if $author.Link }}
+                    <a href="{{ $author.Link }}" class="inline-flex items-center gap-1 font-semibold hover:text-accent-light dark:hover:text-accent-dark transition-colors duration-200">
+                        {{ $author.Name }}
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 opacity-70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
+                    </a>
+                {{ else }}
+                    {{ $author.Name }}
+                {{ end }}
+            </div>
+            {{ if gt (len $entryTracks) 0 }}
+            <div class="flex flex-wrap gap-2 mt-2">
+                {{ range uniq $entryTracks }}
+                    <span class="px-2 py-1 rounded-md bg-bg-tertiary-light dark:bg-bg-tertiary-dark text-[11px] font-semibold uppercase tracking-wide text-text-secondary-light dark:text-text-secondary-dark">{{ . }}</span>
+                {{ end }}
+            </div>
+            {{ end }}
+            {{ if $showLocation }}
+            <div class="mt-2 text-sm text-text-secondary-light dark:text-text-secondary-dark">{{ with .Params.location }}{{ . }}{{ end }}</div>
+            {{ end }}
+            <div class="mt-2 text-sm text-text-secondary-light dark:text-text-secondary-dark line-clamp-3">{{ .Summary | default .Params.short_description }}</div>
+        </div>
+        {{ end }}
+    </div>
+</div>
+{{ else }}
+    <p class="text-text-secondary-light dark:text-text-secondary-dark">{{ T "noEntriesYet" | default "Entries coming soon." }}</p>
+{{ end }}

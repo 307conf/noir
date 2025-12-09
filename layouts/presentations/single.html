@@ -9,23 +9,7 @@
     {{ end }}
 {{ end }}
 
-{{ $speakerName := (or .Params.speaker_name (.Param "speaker") "Unknown Speaker") }}
-{{ $speakerLink := .Params.speaker_link }}
-        
-<!-- Search for author page using multiple path strategies -->
-{{ if $primaryAuthor }}
-    {{ $authorPage := $.Site.GetPage (printf "%s/authors/%s" $.Language.Lang $primaryAuthor) }}
-    {{ if not $authorPage }}
-        {{ $authorPage = $.Site.GetPage (printf "authors/%s" $primaryAuthor) }}
-    {{ end }}
-    {{ if not $authorPage }}
-        {{ $authorPage = $.Site.GetPage (printf "%s/authors/%s.md" $.Language.Lang $primaryAuthor) }}
-    {{ end }}
-    {{ with $authorPage }}
-        {{ $speakerName = .Title }}
-        {{ $speakerLink = .RelPermalink }}
-    {{ end }}
-{{ end }}
+{{ $author := partial "presentation-author.html" . }}
 
 <div class="max-w-4xl mx-auto px-4 py-12">
     <div class="bg-bg-primary-light dark:bg-bg-secondary-dark border border-border-primary-light dark:border-border-primary-dark rounded-2xl p-8 mb-10 shadow-lg">
@@ -33,13 +17,13 @@
         <!-- Speaker info (stacked on mobile, inline on desktop) -->
         <div class="flex flex-col md:flex-row md:items-center md:gap-6 mb-2 space-y-2 md:space-y-0">
             <!-- Speaker name -->
-            {{ if $speakerLink }}
-            <a href="{{ $speakerLink }}" class="group text-md font-bold inline-flex items-center gap-2 font-medium hover:text-accent-light dark:hover:text-accent-dark transition-colors duration-200 w-fit">
-                {{ $speakerName }}
+            {{ if $author.Link }}
+            <a href="{{ $author.Link }}" class="group text-md font-bold inline-flex items-center gap-2 font-medium hover:text-accent-light dark:hover:text-accent-dark transition-colors duration-200 w-fit">
+                {{ $author.Name }}
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-70 group-hover:opacity-100 transition-opacity duration-200"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
             </a>
             {{ else }}
-            <p class="text-md uppercase tracking-wide text-text-secondary-light dark:text-text-secondary-dark">{{ $speakerName }}</p>
+            <p class="text-md uppercase tracking-wide text-text-secondary-light dark:text-text-secondary-dark">{{ $author.Name }}</p>
             {{ end }}
 
             <!-- Date/Period -->

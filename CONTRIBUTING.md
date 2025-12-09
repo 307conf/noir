@@ -20,8 +20,8 @@ Key conventions (presentation & author pages)
   - `logo` or `image` (path to speaker image)
   - `weight` (integer, optional)
 - Optional override fields:
-  - `speaker_name` (string) — override displayed name
-  - `speaker_link` (string) — link to speaker page
+  - `author` (string) — override displayed name
+  - `author_link` (string) — link to author page (optional)
   - `period` (string or datetime) — shown in lists; if absent, templates fallback to `site.Params.period`
 
 Example (TOML):

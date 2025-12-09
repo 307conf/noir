@@ -1,33 +1,52 @@
 {{ define "main" }}
+{{ if .Params.track }}
+<div class="max-w-5xl mx-auto px-4 py-12">
+    <div class="flex flex-col gap-6 mb-8">
+        <div class="flex items-start gap-4">
+            <div class="flex h-20 w-20 shrink-0 items-center justify-center rounded-xl border border-border-secondary-light dark:border-border-secondary-dark bg-bg-secondary-light dark:bg-bg-secondary-dark overflow-hidden">
+                {{ with .Params.logo }}
+                    <img src="{{ . }}" alt="{{ $.Title }} logo" class="h-full w-full object-cover">
+                {{ else }}
+                    <span class="text-xl font-semibold text-text-primary-light dark:text-text-primary-dark">{{ substr $.Title 0 1 }}</span>
+                {{ end }}
+            </div>
+            <div class="space-y-1">
+                <h1 class="text-4xl md:text-5xl font-bold text-text-primary-light dark:text-text-primary-dark">{{ .Title }}</h1>
+                <div class="flex items-center gap-2 text-sm text-text-secondary-light dark:text-text-secondary-dark">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 opacity-80" viewBox="-7 -2 24 24"><path fill="currentColor" d="M4 9.9A5.002 5.002 0 0 1 5 0a5 5 0 0 1 1 9.9V19a1 1 0 0 1-2 0V9.9zM5 8a3 3 0 1 0 0-6a3 3 0 0 0 0 6z"/></svg>
+                    {{ with .Params.location }}<span>{{ . }}</span>{{ end }}
+                </div>
+            </div>
+        </div>
+        {{ with .Content }}
+            <div class="prose prose-invert">{{ . }}</div>
+        {{ end }}
+    </div>
+
+    {{ $allowedTracks := slice .Params.track }}
+    {{ $presentations := where (where .Site.RegularPages "Section" "presentations") "Language.Lang" .Language.Lang }}
+    {{ $filtered := partial "filter-presentations-by-tracks.html" (dict "Pages" $presentations "Tracks" $allowedTracks) }}
+    {{ $entries := sort $filtered "Date" "asc" }}
+
+    {{ partial "presentation-table.html" (dict "Pages" $entries "ShowTracks" false "ShowLocation" false) }}
+</div>
+{{ else }}
 <div class="max-w-4xl mx-auto px-4 py-12">
     <h1 class="text-4xl md:text-5xl font-bold mb-6 text-text-primary-light dark:text-text-primary-dark">{{ .Title }}</h1>
     {{ with .Content }}
         <div class="prose prose-invert mb-10">{{ . }}</div>
     {{ end }}
 
-    {{ $villages := sort .Pages "Date" "asc" }}
+    {{ $villages := sort .Pages "Weight" "asc" }}
     {{ if $villages }}
-    <div class="space-y-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         {{ range $villages }}
-        <article class="group border border-border-primary-light dark:border-border-primary-dark rounded-lg p-5 bg-bg-primary-light dark:bg-bg-secondary-dark transition-all duration-300 hover:border-accent-light dark:hover:border-accent-dark">
-                <p class="text-gray-400 text-sm mb-1">{{ partial "format_datetime.html" (dict "date" .Date "format" "date") }}</p>
-            <a href="{{ .RelPermalink }}" class="inline-flex items-center text-2xl font-semibold text-accent-light dark:text-accent-dark hover:text-text-primary-light dark:hover:text-text-primary-dark">
-                {{ .Title }}
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2 opacity-70 group-hover:opacity-100 transition-opacity duration-200"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
-            </a>
-            {{ with .Params.tags }}
-            <div class="flex flex-wrap gap-2 mt-3">
-                {{ range . }}
-                    <span class="px-2 py-1 bg-bg-tertiary-light dark:bg-bg-tertiary-dark rounded-md text-xs text-text-secondary-light dark:text-text-secondary-dark">{{ . }}</span>
-                {{ end }}
-            </div>
-            {{ end }}
-            <p class="text-text-secondary-light dark:text-text-secondary-dark mt-3">{{ .Summary | default .Params.summary }}</p>
-        </article>
+            {{ partial "card-village.html" . }}
         {{ end }}
     </div>
     {{ else }}
         <p class="text-text-secondary-light dark:text-text-secondary-dark">{{ T "noEntriesYet" }}</p>
     {{ end }}
 </div>
+{{ end }}
 {{ end }}

@@ -1,0 +1,40 @@
+{{- /* Returns a slice of pages filtered by allowed tracks (case-insensitive). */ -}}
+{{- $pages := .Pages | default (slice) -}}
+{{- $allowedRaw := .Tracks -}}
+
+{{- /* Normalize allowed tracks */ -}}
+{{- $allowed := slice -}}
+{{- if $allowedRaw }}
+  {{- range $allowedRaw }}
+    {{- $allowed = $allowed | append (lower (printf "%v" .)) -}}
+  {{- end }}
+  {{- $allowed = uniq $allowed -}}
+{{- end }}
+{{- $allowAll := eq (len $allowed) 0 -}}
+
+{{- $filtered := slice -}}
+{{- range $pages }}
+  {{- $pageTracks := slice -}}
+  {{- with .Params.tracks }}
+    {{- range . }}
+      {{- $pageTracks = $pageTracks | append (lower (printf "%v" .)) -}}
+    {{- end }}
+  {{- end }}
+  {{- with .Params.track }}
+    {{- $pageTracks = $pageTracks | append (lower (printf "%v" .)) -}}
+  {{- end }}
+  {{- $pageTracks = uniq $pageTracks -}}
+
+  {{- $matches := $allowAll -}}
+  {{- if not $matches }}
+    {{- if gt (len (intersect $allowed $pageTracks)) 0 }}
+      {{- $matches = true -}}
+    {{- end }}
+  {{- end }}
+
+  {{- if $matches }}
+    {{- $filtered = $filtered | append . -}}
+  {{- end }}
+{{- end }}
+
+{{- return $filtered -}}

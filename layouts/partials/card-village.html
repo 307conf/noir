@@ -1,0 +1,48 @@
+{{- /* Reusable card for village listings */ -}}
+{{- $page := .Page | default . -}}
+{{- $logo := or $page.Params.logo $page.Params.image $page.Params.logo_url -}}
+{{- $location := $page.Params.location -}}
+{{- $tags := $page.Params.tags -}}
+{{- $summary := $page.Summary | default ($page.Params.summary | default $page.Description) -}}
+<article class="group relative overflow-hidden rounded-xl border border-border-primary-light dark:border-border-primary-dark bg-bg-primary-light dark:bg-bg-secondary-dark p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-accent-light dark:hover:border-accent-dark">
+    <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none bg-gradient-to-br from-blue-500/10 via-transparent to-purple-500/10"></div>
+    <div class="relative flex items-start gap-4">
+        <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-border-secondary-light dark:border-border-secondary-dark bg-bg-secondary-light dark:bg-bg-secondary-dark overflow-hidden">
+            {{ if $logo }}
+                <img src="{{ $logo }}" alt="{{ $page.Title }} logo" class="h-full w-full object-cover">
+            {{ else }}
+                <span class="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark">{{ substr $page.Title 0 1 }}</span>
+            {{ end }}
+        </div>
+        <div class="flex-1 space-y-2">
+            <a href="{{ $page.RelPermalink }}" class="group/title inline-flex items-center gap-2 text-xl font-semibold text-text-primary-light dark:text-text-primary-dark transition-colors duration-200 hover:text-accent-light dark:hover:text-accent-dark">
+                {{ $page.Title }}
+            </a>
+            <div class="flex flex-wrap gap-2 text-[11px] font-semibold uppercase tracking-wide text-text-secondary-light dark:text-text-secondary-dark">
+                {{ if $location }}
+                    <span class="inline-flex items-center gap-1 rounded-full bg-bg-tertiary-light dark:bg-bg-tertiary-dark px-3 py-1">{{ $location }}</span>
+                {{ end }}
+                {{ $date := $page.Params.period }}
+                {{ if $date }}
+                    <span class="inline-flex items-center gap-1 rounded-full bg-bg-tertiary-light dark:bg-bg-tertiary-dark px-3 py-1">
+                        {{ $date }}
+                    </span>
+                {{ else if $page.Date }}
+                    <span class="inline-flex items-center gap-1 rounded-full bg-bg-tertiary-light dark:bg-bg-tertiary-dark px-3 py-1">
+                        {{ partial "format_datetime.html" (dict "date" $page.Date "format" "date") }}
+                    </span>
+                {{ end }}
+            </div>
+            {{ if $summary }}
+            <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm line-clamp-3">{{ $summary }}</p>
+            {{ end }}
+            {{ with $tags }}
+            <div class="flex flex-wrap gap-2 pt-1">
+                {{ range . }}
+                    <span class="px-2 py-1 rounded-md bg-bg-tertiary-light dark:bg-bg-tertiary-dark text-xs text-text-secondary-light dark:text-text-secondary-dark">{{ . }}</span>
+                {{ end }}
+            </div>
+            {{ end }}
+        </div>
+    </div>
+</article>
