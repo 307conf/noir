@@ -1,0 +1,32 @@
+{{- /* Gallery for speakers/authors.
+     Params:
+       - Pages: optional slice of author pages; defaults to authors section in current language.
+       - Title: optional heading.
+       - Limit: optional number of items to show.
+*/ -}}
+{{- $ctx := . -}}
+{{- $pages := $ctx.Pages -}}
+{{- if not $pages }}
+  {{- $pages = where (where site.RegularPages "Section" "authors") "Language.Lang" $ctx.Language.Lang -}}
+{{- end }}
+{{- if $ctx.Limit }}
+  {{- $pages = first $ctx.Limit $pages -}}
+{{- end }}
+{{- $title := or $ctx.Title (T "speakersTitle") -}}
+
+{{- with $pages }}
+<section class="mb-8">
+  {{ if $title }}<h2 class="text-2xl md:text-4xl font-bold mb-4 text-cyan-200">{{ $title }}</h2>{{ end }}
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
+    {{ range . }}
+      {{ $avatar := .Params.avatar | default .Params.image | default "/images/placeholders/avatar.png" }}
+      <a href="{{ .RelPermalink }}" class="group rounded-xl border border-cyan-500/20 bg-white/5 backdrop-blur p-3 flex flex-col items-center text-center hover:border-cyan-400/60 transition-all duration-200">
+        <div class="h-24 w-24 rounded-full overflow-hidden border border-cyan-400/30 bg-black/30 mb-3 shadow-inner">
+          <img src="{{ $avatar }}" alt="{{ .Title }}" class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105">
+        </div>
+        <p class="text-sm md:text-base font-semibold text-white">{{ .Title }}</p>
+      </a>
+    {{ end }}
+  </div>
+</section>
+{{- end }}

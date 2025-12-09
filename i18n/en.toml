@@ -16,6 +16,9 @@ other = "View All"
 [localTimeLabel]
 other = "Local Time:"
 
+[brTimeLabel]
+other = "Brasília Time"
+
 [menuTitle]
 other = "Menu"
 
@@ -60,6 +63,9 @@ other = "Track"
 
 [locationLabel]
 other = "Location"
+
+[speakersTitle]
+other = "Speakers"
 
 [month.1]
 other = "Jan"

@@ -1,49 +1,78 @@
 {{ define "main" }}
-<head>
-    <link rel="stylesheet" type='text/css' href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
-</head>
-<div class="w-full md:w-4/5 lg:w-3/5 mx-auto py-2">
-    <!-- Hero Section -->
+<div class="relative overflow-hidden bg-[#030712] text-white">
+    <div class="absolute inset-0 pointer-events-none opacity-30 bg-[radial-gradient(circle_at_1px_1px,#1f2937_1px,transparent_0)] [background-size:24px_24px]"></div>
+    <div class="absolute inset-0 pointer-events-none mix-blend-screen">
+        <div class="w-full h-full bg-gradient-to-b from-cyan-500/10 via-purple-500/10 to-transparent"></div>
+    </div>
+
     {{ $authorData := index site.Data .Language.Lang "author" }}
     {{ $author := cond (and $authorData $authorData.author) $authorData.author site.Params }}
     
     {{ with $author }}
-    <section class="mb-10">
-        <div class="p-4 pb-2 border border-border-primary-light dark:border-border-primary-dark rounded-lg bg-bg-secondary-light dark:bg-bg-secondary-dark shadow-lg relative">
-            <div class="text-left">
-                <h1 class="text-4xl font-bold mb-2 text-text-primary-light dark:text-text-primary-dark">{{ .name }}</h1>
-                <p class="text-xl mb-6 text-text-primary-light dark:text-text-primary-dark">{{ .description }}</p>
-                <p class="text-gray-400 mb-3 flex items-center text-xl gap-6">
-                    {{ $period := or .period site.Params.period }}
-                    {{ if $period }}
-                    <span class="inline-flex items-center gap-2 text-xl text-gray-400">
-                        <!-- calendar/period icon -->
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="opacity-90">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke="currentColor" fill="none"></rect>
-                            <path d="M16 2v4M8 2v4" stroke="currentColor"></path>
-                            <path d="M3 10h18" stroke="currentColor"></path>
-                            <path d="M8 14h4v4" stroke="currentColor"></path>
-                        </svg>
-                        {{ if gt (len $period) 1 }}
-                            {{ $start := index $period 0 }}
-                            {{ $end := index $period 1 }}
-                            {{ $startStr := partial "format_datetime.html" (dict "date" $start "format" "datetime") }}
-                            {{ $endStr := partial "format_datetime.html" (dict "date" $end "format" "datetime") }}
-                            {{ if eq $startStr $endStr }}
-                                {{ $startStr }}
-                            {{ else }}
-                                {{ $startStr }} — {{ $endStr }}
-                            {{ end }}
-                        {{ else }}
-                            {{ partial "format_datetime.html" (dict "date" (index $period 0) "format" "datetime") }}
-                        {{ end }}
-                    </span>
-                    <span class="inline-flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="text-gray-400" width="24" height="24" viewBox="-7 -2 24 24"><path fill="currentColor" d="M4 9.9A5.002 5.002 0 0 1 5 0a5 5 0 0 1 1 9.9V19a1 1 0 0 1-2 0V9.9zM5 8a3 3 0 1 0 0-6a3 3 0 0 0 0 6z"/></svg>
-                        {{ .location }}
-                    </span>
-                    {{ end }}
-                </p>
+    <section class="relative max-w-6xl mx-auto px-4 pt-12 pb-8 md:pb-12">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <div class="flex-1 relative overflow-hidden rounded-2xl border border-cyan-500/30 bg-white/5 backdrop-blur-lg p-8 shadow-[0_20px_60px_-30px_rgba(59,130,246,0.6)]">
+                <div class="absolute inset-0 pointer-events-none bg-[linear-gradient(120deg,rgba(59,130,246,0.08),transparent_40%)]"></div>
+                <!-- <p class="text-xs uppercase tracking-[0.3em] text-cyan-300 mb-3 flex items-center gap-2">
+                    <span class="inline-flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span> Hacker Conference
+                </p> -->
+                <h1 class="glitch-title text-4xl md:text-4xl font-black leading-tight text-cyan-300 drop-shadow-[0_5px_20px_rgba(0,0,0,0.4)]" data-text="{{ .name }}">{{ .name }} - {{ .description }}</h1>
+                <!-- <p class="mt-4 text-lg text-slate-200/90 leading-relaxed max-w-2xl"><span class="ml-2 mr-2 inline-flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>{{ .description }}</p> -->
+
+                {{ $period := or .period site.Params.period }}
+                {{ if $period }}
+                <div class="mt-6 grid gap-4 md:grid-cols-2">
+                    <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-white/5 p-4">
+                        <div class="flex items-start gap-3">
+                            <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-cyan-500/10 border border-cyan-400/40 text-cyan-200">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                            </div>
+                            <div>
+                                <p class="text-xs uppercase tracking-[0.25em] text-cyan-300">{{ T "eventDateLabel" }}</p>
+                                <p class="text-xl font-semibold text-white mt-1">
+                                    {{ if gt (len $period) 1 }}
+                                        {{ $start := index $period 0 }}
+                                        {{ $end := index $period 1 }}
+                                        {{ $startStr := partial "format_datetime.html" (dict "date" $start "format" "datetime") }}
+                                        {{ $endStr := partial "format_datetime.html" (dict "date" $end "format" "datetime") }}
+                                        {{ if eq $startStr $endStr }}
+                                            {{ $startStr }}
+                                        {{ else }}
+                                            {{ $startStr }} — {{ $endStr }}
+                                        {{ end }}
+                                    {{ else }}
+                                        {{ partial "format_datetime.html" (dict "date" (index $period 0) "format" "datetime") }}
+                                    {{ end }}
+                                </p>
+                                <p class="text-sm text-slate-300 mt-1">{{ T "brTimeLabel" }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative overflow-hidden rounded-xl border border-purple-500/30 bg-white/5 p-4">
+                        <div class="flex items-start gap-3">
+                            <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-purple-500/10 border border-purple-400/40 text-purple-200">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-4.35 7-10a7 7 0 1 0-14 0c0 5.65 7 10 7 10z"/><circle cx="12" cy="11" r="2.5"/></svg>
+                            </div>
+                            <div>
+                                <p class="text-xs uppercase tracking-[0.25em] text-purple-300">{{ T "fullAddressLabel" }}</p>
+                                <p class="text-xl font-semibold text-white mt-1">{{ .location }}</p>
+                                <p class="text-sm text-slate-300 mt-1">{{ site.Params.full_address }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{ end }}
+
+                <div class="mt-6 flex flex-wrap gap-3">
+                    <a href="https://www.eventbrite.com.br/e/307-temporary-security-conference-tickets-1967248486179?aff=siteoficial" class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-lg hover:scale-[1.01] transition-transform duration-200">
+                        Secure your seat
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
+                    </a>
+                    <a href="https://forms.gle/fWjpzdcQjSbHgfyY6" class="inline-flex items-center gap-2 rounded-lg border border-white/30 px-4 py-2 text-sm font-semibold text-white/90 hover:border-cyan-400 hover:text-white transition-colors duration-200">
+                        Submit a talk
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                    </a>
+                </div>
             </div>
         </div>
     </section>
@@ -51,223 +80,142 @@
     {{ warnf "Author data not found. Please check your site configuration." }}
     {{ end }}
 
-    {{ partial "home-agenda.html" . }}
-
-    <!-- trainings Section -->
-    {{ $trainingsPages := where (where .Site.RegularPages "Section" "trainings") "Language.Lang" .Language.Lang }}
-    {{ $trainings := sort $trainingsPages "Weight" "asc" }}
-
-    {{ with $trainings }}
-    <section class="mt-12 md:mt-20 mb-12 md:mb-20">
-        <div class="flex justify-between items-center mb-6 md:mb-8">
-            <h2 class="text-2xl md:text-4xl font-bold">{{ T "trainingsTitle" }}</h2>
+    <div class="max-w-6xl mx-auto px-4 pb-12 space-y-12 relative z-10">
+        <div class="rounded-2xl border border-cyan-500/20 bg-white/5 backdrop-blur p-6 shadow-inner">
+            {{ partial "home-agenda.html" . }}
         </div>
-        <div class="grid grid-cols-1 gap-6 md:gap-8 max-w-3xl mx-auto">
-            {{ range first 2 . }}
-            {{ $image := .Params.image | default "/images/placeholders/training.jpg" }}
-            {{ $link := .Params.link | default .RelPermalink }}
-            {{ $sponsors := .Params.sponsors }}
-            {{ if not (and $sponsors (gt (len $sponsors) 0)) }}
-                {{ with .Params.sponsor }}
-                    {{ $sponsors = (slice .) }}
+
+        <!-- trainings Section -->
+        {{ $trainingsPages := where (where .Site.RegularPages "Section" "trainings") "Language.Lang" .Language.Lang }}
+        {{ $trainings := sort $trainingsPages "Weight" "asc" }}
+
+        {{ with $trainings }}
+        <section class="mb-4">
+            <div class="flex justify-between items-center mb-6 md:mb-8">
+                <h2 class="text-2xl md:text-4xl font-bold text-cyan-200">Trainings & Workshops</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                {{ range first 2 . }}
+                {{ $image := .Params.image | default "/images/placeholders/training.jpg" }}
+                {{ $link := .Params.link | default .RelPermalink }}
+                {{ $sponsors := .Params.sponsors }}
+                {{ if not (and $sponsors (gt (len $sponsors) 0)) }}
+                    {{ with .Params.sponsor }}
+                        {{ $sponsors = (slice .) }}
+                    {{ end }}
                 {{ end }}
-            {{ end }}
-            <div class="project-card relative overflow-hidden rounded-lg bg-[#121212] border border-gray-700 transition-all duration-300 group">
-                <div class="aspect-w-16 aspect-h-9 overflow-hidden relative">
-                    <div class="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 z-10"></div>
-                    <img src="{{ $image }}" alt="{{ .Title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-60 z-20"></div>
-                    
-                    <!-- Content that moves up on hover -->
-                    <div class="absolute inset-0 z-30 p-4 pb-3 md:p-6 md:pb-4 flex flex-col justify-end transform transition-transform duration-500 translate-y-0 group-hover:translate-y-[-20px]">
-                        <h3 class="text-xl md:text-2xl font-bold mb-1.5 md:mb-2 text-white line-clamp-2">{{ .Title }}</h3>
-                        <div class="hidden sm:flex flex-wrap gap-1 md:gap-2 mb-1.5 md:mb-3">
-                            {{ with $sponsors }}
-                                {{ range . }}
-                                    <span class="px-1.5 md:px-2 py-0.5 bg-black/30 backdrop-blur-sm rounded-md text-[10px] md:text-xs font-medium text-white">{{ . }}</span>
+                <div class="project-card relative overflow-hidden rounded-lg bg-white/5 border border-cyan-500/20 transition-all duration-300 group">
+                    <div class="aspect-w-16 aspect-h-9 overflow-hidden relative">
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 z-10"></div>
+                        <img src="{{ $image }}" alt="{{ .Title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-60 z-20"></div>
+                        <div class="absolute inset-0 z-30 p-4 pb-3 md:p-6 md:pb-4 flex flex-col justify-end transform transition-transform duration-500 translate-y-0 group-hover:translate-y-[-20px]">
+                            <h3 class="text-xl md:text-2xl font-bold mb-1.5 md:mb-2 text-white line-clamp-2">{{ .Title }}</h3>
+                            <div class="hidden sm:flex flex-wrap gap-1 md:gap-2 mb-1.5 md:mb-3">
+                                {{ with $sponsors }}
+                                    {{ range . }}
+                                        <span class="px-1.5 md:px-2 py-0.5 bg-black/30 backdrop-blur-sm rounded-md text-[10px] md:text-xs font-medium text-white">{{ . }}</span>
+                                    {{ end }}
                                 {{ end }}
-                            {{ end }}
+                            </div>
+                            <p class="hidden md:block text-sm text-white mb-3 line-clamp-3 md:line-clamp-4">{{ .Params.short_description | default .Summary }}</p>
+                            <a href="{{ $link }}" class="bg-white/90 backdrop-blur-sm hover:bg-white text-black text-xs md:text-sm font-medium py-1 md:py-1.5 px-2 md:px-3 rounded-md inline-block transition-all duration-300 transform opacity-100 md:opacity-0 group-hover:opacity-100 w-fit flex items-center shadow-lg hover:shadow-xl">
+                                {{ T "learnMore" }}
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 ml-1 transform group-hover:translate-x-1 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                </svg>
+                            </a>
                         </div>
-                        <p class="hidden md:block text-sm text-white mb-3 line-clamp-3 md:line-clamp-4">{{ .Params.short_description | default .Summary }}</p>
-                        
-                        <!-- Learn More button -->
-                        <a href="{{ $link }}" class="bg-white/90 backdrop-blur-sm hover:bg-white text-black text-xs md:text-sm font-medium py-1 md:py-1.5 px-2 md:px-3 rounded-md inline-block transition-all duration-300 transform opacity-100 md:opacity-0 group-hover:opacity-100 w-fit flex items-center shadow-lg hover:shadow-xl">
-                            {{ T "learnMore" }}
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 ml-1 transform group-hover:translate-x-1 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                            </svg>
-                        </a>
                     </div>
                 </div>
+                {{ end }}
             </div>
-            {{ end }}
             <div class="flex justify-center mt-4 md:mt-8">
-                <a href="{{ "trainings/" | absLangURL }}" class="text-blue-500 hover:text-blue-400 transition-colors duration-200 text-sm md:text-lg">{{ T "viewAll" }}</a>
+                <a href="{{ "trainings/" | absLangURL }}" class="text-cyan-400 hover:text-cyan-200 transition-colors duration-200 text-sm md:text-lg">{{ T "viewAll" }}</a>
             </div>
-        </div>
-    </section>
-    {{ else }}
-    {{ warnf "No training entries found for language %q. Add markdown files under content/%s/trainings/." .Language.Lang .Language.Lang }}
-    {{ end }}
+        </section>
+        {{ else }}
+        {{ warnf "No training entries found for language %q. Add markdown files under content/%s/trainings/." .Language.Lang .Language.Lang }}
+        {{ end }}
 
-    <!-- Blog Section -->
-    {{ $villagesPages := where (where .Site.RegularPages "Section" "villages") "Language.Lang" .Language.Lang }}
-    {{ $villages := sort $villagesPages "Date" "asc" }}
-    
-    {{ with $villages }}
-    <section class="mt-20 mb-20">
-        <div class="flex justify-between items-center mb-8">
-            <h2 class="text-4xl font-bold">{{ T "villagesTitle" }}</h2>
-        </div>
-        <div class="space-y-8 max-w-3xl mx-auto">
-            {{ range first 3 . }}
-            <div class="group">
-                <p class="text-gray-400 text-sm mb-1">{{ partial "format_datetime.html" (dict "date" .Date "format" "date") }}</p>
-                <a href="{{ .RelPermalink }}" class="block group">
-                    <h3 class="inline-flex items-center text-xl font-medium text-accent-light dark:text-accent-dark hover:text-text-primary-light dark:hover:text-text-primary-dark transition-colors duration-200 mb-3">
-                        {{ .Title }}
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2 opacity-70 group-hover:opacity-100 transition-opacity duration-200">
-                            <path d="M7 17l9.2-9.2M17 17V7H7"/>
-                        </svg>
-                    </h3>
-                </a>    
-                <p class="text-gray-400">{{ .Summary | default .Params.summary }}</p>
+        {{ partial "speakers-gallery.html" (dict "Language" .Language "Title" (T "speakersTitle") "Limit" 8) }}
+
+        <!-- Villages Section -->
+        {{ $villagesPages := where (where .Site.RegularPages "Section" "villages") "Language.Lang" .Language.Lang }}
+        {{ $villages := sort $villagesPages "Date" "asc" }}
+        
+        {{ with $villages }}
+        <section class="mb-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl md:text-4xl font-bold text-cyan-200">{{ T "villagesTitle" }}</h2>
             </div>
-            {{ end }}
-        </div>
-        <div class="flex justify-center mt-8">
-            <a href="{{ "villages/" | absLangURL }}" class="text-blue-500 hover:text-blue-400 transition-colors duration-200 text-lg">{{ T "viewAll" }}</a>
-        </div>
-    </section>
-    {{ else }}
-    {{ warnf "No villages found for language %q. Add markdown files under content/%s/villages/." .Language.Lang .Language.Lang }}
-    {{ end }}
-    <section class="mt-10 mb-10">
-    {{ $aboutData := index site.Data .Language.Lang "about" }}
-    {{ partial "supporters-card" (dict  "Title" (T "supportersLabel") "Supporters" $aboutData.supporters) }}
-    </section>
-    {{ partial "event-address.html" . }}
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {{ range first 3 . }}
+                <div class="group relative overflow-hidden rounded-xl border border-cyan-500/20 bg-white/5 p-4 transition-all duration-200 hover:border-cyan-400/60">
+                    <p class="text-slate-300 text-xs mb-1">{{ partial "format_datetime.html" (dict "date" .Date "format" "date") }}</p>
+                    <a href="{{ .RelPermalink }}" class="block group">
+                        <h3 class="inline-flex items-center text-lg font-semibold text-white hover:text-cyan-300 transition-colors duration-200 mb-2">
+                            {{ .Title }}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2 opacity-70 group-hover:opacity-100 transition-opacity duration-200">
+                                <path d="M7 17l9.2-9.2M17 17V7H7"/>
+                            </svg>
+                        </h3>
+                    </a>    
+                    <p class="text-slate-200/80 text-sm">{{ .Summary | default .Params.summary }}</p>
+                </div>
+                {{ end }}
+            </div>
+            <div class="flex justify-center mt-6">
+                <a href="{{ "villages/" | absLangURL }}" class="text-cyan-400 hover:text-cyan-200 transition-colors duration-200 text-lg">{{ T "viewAll" }}</a>
+            </div>
+        </section>
+        {{ else }}
+        {{ warnf "No villages found for language %q. Add markdown files under content/%s/villages/." .Language.Lang .Language.Lang }}
+        {{ end }}
+
+        <section class="pb-6">
+            {{ $aboutData := index site.Data .Language.Lang "about" }}
+            {{ partial "supporters-card" (dict  "Title" (T "supportersLabel") "Supporters" $aboutData.supporters) }}
+        </section>
+    </div>
 </div>
 
 <style>
-.sponsor-carousel {
-    width: 100%;
-    overflow: hidden;
-    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+.glitch-title {
+    position: relative;
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.35), 0 0 30px rgba(168, 85, 247, 0.35);
 }
-
-.carousel-container {
-    width: 100%;
-    overflow: hidden;
-    margin-bottom: 0.5rem;
+.glitch-title::after, .glitch-title::before {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0.3;
+    mix-blend-mode: screen;
 }
-
-.carousel-track, .carousel-track-reverse {
-    display: flex;
-    width: fit-content;
+.glitch-title::before {
+    transform: translate(2px, -2px);
+    color: #22d3ee;
 }
-
-.carousel-track {
-    animation: scroll 45s linear infinite;
-}
-
-.carousel-track-left-to-right {
-    animation: scroll-left-to-right 60s linear infinite;
-}
-
-.carousel-track-reverse {
-    animation: scroll-reverse 45s linear infinite;
-}
-
-.carousel-item {
-    display: flex;
-    align-items: center;
-    width: auto;
-    padding: 0.75rem 0.5rem;
-    margin: 0 0.1rem;
-    border-radius: 0.5rem;
-    white-space: nowrap;
-    gap: 0.5rem;
-}
-
-.carousel-item i {
-    font-size: 2.25rem;
-}
-
-.carousel-item span {
-    font-size: 1.25rem;
-    font-weight: 500;
-}
-
-.carousel-container:hover .carousel-track,
-.carousel-container:hover .carousel-track-reverse,
-.carousel-container:hover .carousel-track-left-to-right {
-    animation-play-state: paused;
-}
-
-@keyframes scroll {
-    0% {
-        transform: translateX(0);
-    }
-    100% {
-        transform: translateX(calc(-100% / 2));
-    }
-}
-
-@keyframes scroll-left-to-right {
-    0% {
-        transform: translateX(calc(-100% / 2));
-    }
-    100% {
-        transform: translateX(0);
-    }
-}
-
-@keyframes scroll-reverse {
-    0% {
-        transform: translateX(0);
-    }
-    100% {
-        transform: translateX(calc(-100% / 2));
-    }
-}
-
-.max-w-3xl {
-    border-color: rgba(75, 85, 99, 0.7); 
+.glitch-title::after {
+    transform: translate(-2px, 2px);
+    color: #a855f7;
 }
 
 .project-card {
     height: 100%;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.35), 0 10px 25px -10px rgba(59, 130, 246, 0.4);
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    background: linear-gradient(to bottom right, rgba(30, 41, 59, 0.5), rgba(30, 41, 59, 0.8));
-    backdrop-filter: blur(10px);
 }
 
 .project-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.35), 0 10px 10px -5px rgba(59, 130, 246, 0.2);
     border-color: rgba(59, 130, 246, 0.5);
 }
-@media (max-width: 767px) {
-    .project-card {
-        margin: 0 1rem; 
-    }
-    .aspect-w-16 {
-        padding-bottom: 75%; 
-    }
-}
 
-@media (min-width: 768px) {
-    .project-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
-        border-color: rgba(59, 130, 246, 0.5);
-    }
-}
 .aspect-w-16 {
     position: relative;
     padding-bottom: 56.25%;
@@ -284,76 +232,5 @@
     object-fit: cover;
     filter: saturate(1.1) contrast(1.1);
 }
-
-.line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-.blog-card {
-    transition: all 0.3s ease;
-}
-
-.blog-card:hover {
-    transform: translateX(4px);
-}
-
-footer {
-    background: linear-gradient(to bottom, transparent, rgba(17, 24, 39, 0.5));
-}
-
-/* Toaster styles */
-.toaster {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: var(--toaster-bg, #333); 
-    color: var(--toaster-text, white);
-    padding: 10px 20px;
-    border-radius: 5px;
-    z-index: 1000;
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out, background-color 0.3s ease, color 0.3s ease;
-}
-
-html.dark .toaster {
-    --toaster-bg: #e5e7eb;
-    --toaster-text: #1f2937;
-}
-
-.toaster.show {
-    opacity: 1;
-}
 </style>
-
-<script>
-function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(function() {
-        showToaster('Discord username copied to clipboard!');
-    }, function(err) {
-        showToaster('Failed to copy username.');
-        console.error('Could not copy text: ', err);
-    });
-}
-
-function showToaster(message) {
-    const toaster = document.createElement('div');
-    toaster.className = 'toaster';
-    toaster.textContent = message;
-    document.body.appendChild(toaster);
-    setTimeout(() => {
-        toaster.classList.add('show');
-    }, 10); 
-    setTimeout(() => {
-        toaster.classList.remove('show');
-        setTimeout(() => {
-            document.body.removeChild(toaster);
-        }, 500); 
-    }, 3000); 
-}
-</script>
 {{ end }} 
