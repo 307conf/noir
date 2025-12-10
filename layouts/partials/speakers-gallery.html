@@ -15,18 +15,117 @@
 {{- $title := or $ctx.Title (T "speakersTitle") -}}
 
 {{- with $pages }}
-<section class="mb-8">
-  {{ if $title }}<h2 class="text-2xl md:text-4xl font-bold mb-4 text-cyan-200">{{ $title }}</h2>{{ end }}
-  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
-    {{ range . }}
-      {{ $avatar := .Params.avatar | default .Params.image | default "/images/placeholders/avatar.png" }}
-      <a href="{{ .RelPermalink }}" class="group rounded-xl border border-cyan-500/20 bg-white/5 backdrop-blur p-3 flex flex-col items-center text-center hover:border-cyan-400/60 transition-all duration-200">
-        <div class="h-24 w-24 rounded-full overflow-hidden border border-cyan-400/30 bg-black/30 mb-3 shadow-inner">
-          <img src="{{ $avatar }}" alt="{{ .Title }}" class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105">
-        </div>
-        <p class="text-sm md:text-base font-semibold text-white">{{ .Title }}</p>
-      </a>
-    {{ end }}
+{{- $carouselID := printf "speakers-carousel-%s" $ctx.Language.Lang -}}
+<section class="mb-10">
+  <div class="flex items-center justify-between mb-6 md:mb-8">
+    {{ if $title }}<h2 class="text-2xl md:text-4xl font-bold text-cyan-200">{{ $title }}</h2>{{ end }}
+  </div>
+
+  <div id="{{ $carouselID }}" class="relative">
+    <div class="absolute inset-y-0 left-0 w-16 pointer-events-none bg-gradient-to-r from-[#030712] via-[#030712]/70 to-transparent"></div>
+    <div class="absolute inset-y-0 right-0 w-16 pointer-events-none bg-gradient-to-l from-[#030712] via-[#030712]/70 to-transparent"></div>
+    <div class="overflow-hidden">
+      <div class="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 pr-4 -mr-4 no-scrollbar" data-carousel-track>
+        {{ range . }}
+          {{- $avatar := .Params.avatar | default .Params.image | default "/images/placeholders/avatar.png" -}}
+          {{- $role := .Params.role | default .Params.position | default "" -}}
+          <article data-carousel-item class="min-w-[220px] sm:min-w-[260px] lg:min-w-[300px] snap-start">
+            <a href="{{ .RelPermalink }}" class="block h-full bg-white/5 border border-cyan-500/20 rounded-xl overflow-hidden relative group shadow-lg hover:border-cyan-400/50 transition-colors duration-200">
+              <div class="flex flex-col items-center gap-4 p-6 h-full bg-gradient-to-br from-cyan-500/10 via-indigo-500/5 to-transparent">
+                <div class="h-24 w-24 md:h-28 md:w-28 rounded-full bg-white/10 border border-white/15 flex items-center justify-center overflow-hidden shadow-inner">
+                  {{ if $avatar }}
+                    <img src="{{ $avatar }}" alt="{{ .Title }}" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300">
+                  {{ else }}
+                    <span class="text-3xl font-black text-cyan-100">{{ substr .Title 0 1 }}</span>
+                  {{ end }}
+                </div>
+                <div class="text-center space-y-1">
+                  <h3 class="text-lg font-semibold text-white group-hover:text-cyan-200 transition-colors duration-200">{{ .Title }}</h3>
+                  {{ with $role }}
+                    <p class="text-sm text-slate-200/80">{{ . }}</p>
+                  {{ end }}
+                </div>
+              </div>
+            </a>
+          </article>
+        {{ end }}
+      </div>
+    </div>
+
+    <div class="flex items-center justify-end gap-2 mt-3">
+      <button type="button" data-carousel-prev class="h-10 w-10 inline-flex items-center justify-center rounded-full border border-white/20 bg-white/5 text-white hover:border-cyan-400 hover:text-cyan-200 transition-colors duration-200 backdrop-blur shadow-md">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <button type="button" data-carousel-next class="h-10 w-10 inline-flex items-center justify-center rounded-full border border-white/20 bg-white/5 text-white hover:border-cyan-400 hover:text-cyan-200 transition-colors duration-200 backdrop-blur shadow-md">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
   </div>
 </section>
+
+<style>
+  /* Hide scrollbar without disabling scroll for the carousel */
+  #{{ $carouselID }} .no-scrollbar::-webkit-scrollbar { display: none; }
+  #{{ $carouselID }} .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+</style>
+<script>
+(() => {
+  const root = document.getElementById('{{ $carouselID }}');
+  if (!root) return;
+  const track = root.querySelector('[data-carousel-track]');
+  const prev = root.querySelector('[data-carousel-prev]');
+  const next = root.querySelector('[data-carousel-next]');
+  if (!track || !prev || !next) return;
+
+  const getStep = () => {
+    const card = track.querySelector('[data-carousel-item]');
+    if (!card) return 320;
+    const styles = window.getComputedStyle(track);
+    const gap = parseFloat(styles.columnGap || styles.gap || '0') || 16;
+    return card.getBoundingClientRect().width + gap;
+  };
+
+  const scrollByCard = (direction) => {
+    track.scrollBy({ left: direction * getStep(), behavior: 'smooth' });
+  };
+
+  const scrollForward = () => {
+    const step = getStep();
+    const maxScroll = track.scrollWidth - track.clientWidth;
+    const nextLeft = track.scrollLeft + step;
+    if (nextLeft + 8 >= maxScroll) {
+      track.scrollTo({ left: 0, behavior: 'smooth' });
+    } else {
+      track.scrollBy({ left: step, behavior: 'smooth' });
+    }
+  };
+
+  let autoTimer;
+  const stopAuto = () => {
+    if (autoTimer) window.clearInterval(autoTimer);
+    autoTimer = null;
+  };
+  const startAuto = () => {
+    stopAuto();
+    autoTimer = window.setInterval(scrollForward, 4500);
+  };
+
+  prev.addEventListener('click', () => {
+    stopAuto();
+    scrollByCard(-1);
+  });
+  next.addEventListener('click', () => {
+    stopAuto();
+    scrollByCard(1);
+  });
+
+  track.addEventListener('mouseenter', stopAuto);
+  track.addEventListener('mouseleave', startAuto);
+  root.addEventListener('focusin', stopAuto);
+  root.addEventListener('focusout', startAuto);
+  root.addEventListener('pointerdown', stopAuto);
+
+  startAuto();
+})();
+</script>
 {{- end }}

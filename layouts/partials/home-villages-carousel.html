@@ -101,8 +101,43 @@
     track.scrollBy({ left: direction * getStep(), behavior: 'smooth' });
   };
 
-  prev.addEventListener('click', () => scrollByCard(-1));
-  next.addEventListener('click', () => scrollByCard(1));
+  const scrollForward = () => {
+    const step = getStep();
+    const maxScroll = track.scrollWidth - track.clientWidth;
+    const nextLeft = track.scrollLeft + step;
+    if (nextLeft + 8 >= maxScroll) {
+      track.scrollTo({ left: 0, behavior: 'smooth' });
+    } else {
+      track.scrollBy({ left: step, behavior: 'smooth' });
+    }
+  };
+
+  let autoTimer;
+  const stopAuto = () => {
+    if (autoTimer) window.clearInterval(autoTimer);
+    autoTimer = null;
+  };
+  const startAuto = () => {
+    stopAuto();
+    autoTimer = window.setInterval(scrollForward, 4500);
+  };
+
+  prev.addEventListener('click', () => {
+    stopAuto();
+    scrollByCard(-1);
+  });
+  next.addEventListener('click', () => {
+    stopAuto();
+    scrollByCard(1);
+  });
+
+  track.addEventListener('mouseenter', stopAuto);
+  track.addEventListener('mouseleave', startAuto);
+  root.addEventListener('focusin', stopAuto);
+  root.addEventListener('focusout', startAuto);
+  root.addEventListener('pointerdown', stopAuto);
+
+  startAuto();
 })();
 </script>
 {{- else }}
