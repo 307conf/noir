@@ -25,11 +25,10 @@
   {{- end }}
   {{- $pageTracks = uniq $pageTracks -}}
 
-  {{- $matches := $allowAll -}}
-  {{- if not $matches }}
-    {{- if gt (len (intersect $allowed $pageTracks)) 0 }}
-      {{- $matches = true -}}
-    {{- end }}
+  {{- /* If no filter is set, or if the presentation has no track, include it. */ -}}
+  {{- $matches := or $allowAll (eq (len $pageTracks) 0) -}}
+  {{- if and (not $matches) (gt (len (intersect $allowed $pageTracks)) 0) }}
+    {{- $matches = true -}}
   {{- end }}
 
   {{- if $matches }}

@@ -26,9 +26,35 @@
     {{ if eq $fmt "date" }}
       {{- printf "%s %s %d" $day $monthName $year -}}
     {{ else }}
-      {{ $hour := printf "%02d" ($d.Hour) }}
-      {{ $min := printf "%02d" ($d.Minute) }}
-      {{- printf "%s %s %d, %s:%s" $day $monthName $year $hour $min -}}
+      {{ if eq $fmt "datetime" }}
+        {{ $hour := printf "%02d" ($d.Hour) }}
+        {{ $min := printf "%02d" ($d.Minute) }}
+        {{- printf "%s %s %d, %s:%s" $day $monthName $year $hour $min -}}
+      {{ else }}
+        {{/* Allow custom format strings (e.g. HH:mm, YYYY-MM-DD).
+             We translate common tokens to Go's time layout before formatting. */}}
+        {{ $layout := $fmt }}
+        {{ $replacements := slice
+            (dict "from" "YYYY" "to" "2006")
+            (dict "from" "YY" "to" "06")
+            (dict "from" "MMMM" "to" "January")
+            (dict "from" "MMM" "to" "Jan")
+            (dict "from" "MM" "to" "01")
+            (dict "from" "DD" "to" "02")
+            (dict "from" "HH" "to" "15")
+            (dict "from" "hh" "to" "03")
+            (dict "from" "mm" "to" "04")
+            (dict "from" "ss" "to" "05")
+        }}
+        {{ range $replacements }}
+          {{ $layout = replace $layout .from .to }}
+        {{ end }}
+        {{ $formatted := $d.Format $layout }}
+        {{/* Localize full month names if present in the formatted string */}}
+        {{ $formatted = replace $formatted "January" $monthName }}
+        {{ $formatted = replace $formatted "Jan" $monthName }}
+        {{- $formatted -}}
+      {{ end }}
     {{ end }}
   {{ end }}
 {{ end }}

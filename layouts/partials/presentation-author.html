@@ -29,7 +29,7 @@
 {{- end }}
 
 {{- if not $name }}
-    {{- $name = "Unknown Speaker" -}}
+    {{- $name = "—" -}}
 {{- end }}
 
 {{- return (dict "Name" $name "Link" $link) -}}

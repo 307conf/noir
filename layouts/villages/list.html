@@ -1,6 +1,6 @@
 {{ define "main" }}
 {{ if .Params.track }}
-<div class="max-w-5xl mx-auto px-4 py-12">
+<div class="max-w-6xl mx-auto px-4 py-12">
     <div class="flex flex-col gap-6 mb-8">
         <div class="flex items-start gap-4">
             <div class="flex h-20 w-20 shrink-0 items-center justify-center rounded-xl border border-border-secondary-light dark:border-border-secondary-dark bg-bg-secondary-light dark:bg-bg-secondary-dark overflow-hidden">
@@ -27,11 +27,12 @@
     {{ $presentations := where (where .Site.RegularPages "Section" "presentations") "Language.Lang" .Language.Lang }}
     {{ $filtered := partial "filter-presentations-by-tracks.html" (dict "Pages" $presentations "Tracks" $allowedTracks) }}
     {{ $entries := sort $filtered "Date" "asc" }}
+    {{ $timeFormat := or .Params.datetime_format (and .Parent .Parent.Params.datetime_format) | default "HH:mm" }}
 
-    {{ partial "presentation-table.html" (dict "Pages" $entries "ShowTracks" false "ShowLocation" false) }}
+    {{ partial "presentation-table.html" (dict "Pages" $entries "ShowTracks" false "ShowLocation" false "Site" .Site "Language" .Language "TimeFormat" $timeFormat) }}
 </div>
 {{ else }}
-<div class="max-w-4xl mx-auto px-4 py-12">
+<div class="max-w-6xl mx-auto px-4 py-12">
     <h1 class="text-4xl md:text-5xl font-bold mb-6 text-text-primary-light dark:text-text-primary-dark">{{ .Title }}</h1>
     {{ with .Content }}
         <div class="prose prose-invert mb-10">{{ . }}</div>

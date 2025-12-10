@@ -1,4 +1,9 @@
 {{ define "main" }}
+{{ if .Params.placeholder }}
+<div class="max-w-6xl mx-auto px-4 py-12">
+    <p class="text-text-secondary-light dark:text-text-secondary-dark text-lg">{{ T "noEntriesYet" | default "Content not available." }}</p>
+</div>
+{{ else }}
 {{ $authorSlug := cond (isset .Params "slug") .Params.slug .File.TranslationBaseName }}
 
 <!-- Try to find author page from authors field -->
@@ -11,7 +16,7 @@
 
 {{ $author := partial "presentation-author.html" . }}
 
-<div class="max-w-4xl mx-auto px-4 py-12">
+<div class="max-w-6xl mx-auto px-4 py-12">
     <div class="bg-bg-primary-light dark:bg-bg-secondary-dark border border-border-primary-light dark:border-border-primary-dark rounded-2xl p-8 mb-10 shadow-lg">
         <h1 class="text-2xl md:text-3xl font-bold text-text-primary-light dark:text-text-primary-dark mb-4">{{ .Title }}</h1>
         <!-- Speaker info (stacked on mobile, inline on desktop) -->
@@ -51,4 +56,5 @@
         </div>
     </div>
 </div>
+{{ end }}
 {{ end }}

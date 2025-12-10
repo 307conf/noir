@@ -3,49 +3,84 @@ Reusable table layout for listing presentations/talks.
 Params:
 - Pages: slice of pages to render.
 - ShowTracks: bool (default true)
-- ShowLocation: bool (default true)
+- ShowLocation: bool (default false)
 */ -}}
 {{- $pages := .Pages | default (slice) -}}
 {{- $showTracks := cond (isset . "ShowTracks") .ShowTracks true -}}
 {{- $showLocation := cond (isset . "ShowLocation") .ShowLocation true -}}
+{{- $siteCtx := .Site | default site -}}
+{{- $lang := .Language | default $siteCtx.Language -}}
 {{- $entries := sort $pages "Date" "asc" -}}
 
-{{- if gt (len $entries) 0 }}
+{{- /* Optional date filter */ -}}
+{{- $dateRange := .DateRange -}} {{/* expects map with optional "Start" and "End" time values */}}
+{{- /* Optional date/time format; see format_datetime.html (accepts "date", "datetime" or custom tokens like HH:mm) */ -}}
+{{- $timeFormat := .TimeFormat | default "datetime" -}}
+
+{{- /* Map track slug to village title for the current language */ -}}
+{{- $trackNameMap := dict -}}
+{{- $villagePages := where (where $siteCtx.RegularPages "Section" "villages") "Language.Lang" $lang.Lang -}}
+{{- range $villagePages }}
+    {{- with .Params.track }}
+        {{- $trackNameMap = merge $trackNameMap (dict (lower (printf "%v" .)) .Title) -}}
+    {{- end }}
+{{- end }}
+
+{{- /* Apply optional date filtering */ -}}
+{{- $filtered := slice -}}
+{{- range $entries }}
+    {{- $date := .Params.period | default .Date -}}
+    {{- $inRange := true -}}
+    {{- with $dateRange }}
+        {{- with .Start }}{{ if lt $date . }}{{ $inRange = false }}{{ end }}{{ end }}
+        {{- with .End }}{{ if gt $date . }}{{ $inRange = false }}{{ end }}{{ end }}
+    {{- end }}
+    {{- if $inRange }}{{ $filtered = $filtered | append . }}{{ end }}
+{{- end }}
+
+{{- if gt (len $filtered) 0 }}
 <div class="overflow-hidden rounded-xl border border-border-primary-light dark:border-border-primary-dark bg-bg-primary-light dark:bg-bg-secondary-dark shadow-sm">
     <div class="hidden md:block overflow-x-auto">
         <table class="min-w-full text-left text-sm">
             <thead class="bg-bg-secondary-light dark:bg-bg-secondary-dark">
                 <tr class="text-text-secondary-light dark:text-text-secondary-dark">
                     <th class="px-4 py-3 font-semibold uppercase tracking-wide text-[11px]">{{ T "talkTimeLabel" }}</th>
+                    {{ if $showTracks }}<th class="px-4 py-3 font-semibold uppercase tracking-wide text-[11px]">{{ T "trackLabel" }}</th>{{ end }}
                     <th class="px-4 py-3 font-semibold uppercase tracking-wide text-[11px]">{{ T "speakerLabel" }}</th>
                     <th class="px-4 py-3 font-semibold uppercase tracking-wide text-[11px]">{{ T "talkTitleLabel" }}</th>
-                    {{ if $showTracks }}<th class="px-4 py-3 font-semibold uppercase tracking-wide text-[11px]">{{ T "trackLabel" }}</th>{{ end }}
                     {{ if $showLocation }}<th class="px-4 py-3 font-semibold uppercase tracking-wide text-[11px]">{{ T "locationLabel" }}</th>{{ end }}
                 </tr>
             </thead>
             <tbody class="divide-y divide-border-primary-light dark:divide-border-primary-dark text-text-primary-light dark:text-text-primary-dark">
-                {{ range $entries }}
+                {{ range $filtered }}
                 {{ $author := partial "presentation-author.html" . }}
+                {{ $isPlaceholder := eq true .Params.placeholder }}
                 {{ $entryTracks := slice }}
-                {{ with .Params.tracks }}{{ range . }}{{ $entryTracks = $entryTracks | append . }}{{ end }}{{ end }}
-                {{ with .Params.track }}{{ $entryTracks = $entryTracks | append . }}{{ end }}
+                {{ with .Params.tracks }}
+                    {{ range . }}
+                        {{ $slug := lower (printf "%v" .) }}
+                        {{ $name := or (index $trackNameMap $slug) . }}
+                        {{ $entryTracks = $entryTracks | append $name }}
+                    {{ end }}
+                {{ end }}
+                {{ with .Params.track }}
+                    {{ $slug := lower (printf "%v" .) }}
+                    {{ $name := or (index $trackNameMap $slug) . }}
+                    {{ $entryTracks = $entryTracks | append $name }}
+                {{ end }}
+                {{/* Determine display time respecting TimeFormat and possible period types */}}
+                {{ $displayTime := "" }}
+                {{ with .Params.period }}
+                    {{ if (in (printf "%T" .) "Time") }}
+                        {{ $displayTime = partial "format_datetime.html" (dict "date" . "format" $timeFormat) }}
+                    {{ else }}
+                        {{ $displayTime = . }}
+                    {{ end }}
+                {{ else }}
+                    {{ $displayTime = partial "format_datetime.html" (dict "date" .Date "format" $timeFormat) }}
+                {{ end }}
                 <tr class="hover:bg-bg-secondary-light/60 dark:hover:bg-bg-secondary-dark/60 transition-colors duration-150">
-                    <td class="px-4 py-3 whitespace-nowrap align-top text-sm text-text-secondary-light dark:text-text-secondary-dark">
-                        {{ with .Params.period }}{{ . }}{{ else }}{{ partial "format_datetime.html" (dict "date" .Date "format" "datetime") }}{{ end }}
-                    </td>
-                    <td class="px-4 py-3 align-top text-sm text-text-secondary-light dark:text-text-secondary-dark">
-                        {{ if $author.Link }}
-                            <a href="{{ $author.Link }}" class="inline-flex items-center gap-1 font-semibold hover:text-accent-light dark:hover:text-accent-dark transition-colors duration-200">
-                                {{ $author.Name }}
-                            </a>
-                        {{ else }}
-                            {{ $author.Name }}
-                        {{ end }}
-                    </td>
-                    <td class="px-4 py-3 align-top">
-                        <a href="{{ .RelPermalink }}" class="font-semibold hover:text-accent-light dark:hover:text-accent-dark transition-colors duration-200">{{ .Title }}</a>
-                        <div class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-1 line-clamp-2">{{ .Params.short_description | default .Summary }}</div>
-                    </td>
+                    <td class="px-4 py-3 whitespace-nowrap align-top text-sm text-text-secondary-light dark:text-text-secondary-dark">{{ $displayTime }}</td>
                     {{ if $showTracks }}
                     <td class="px-4 py-3 align-top">
                         {{ if gt (len $entryTracks) 0 }}
@@ -57,6 +92,23 @@ Params:
                         {{ end }}
                     </td>
                     {{ end }}
+                    <td class="px-4 py-3 align-top text-sm text-text-secondary-light dark:text-text-secondary-dark">
+                        {{ if and $author.Link (not $isPlaceholder) }}
+                            <a href="{{ $author.Link }}" class="inline-flex items-center gap-1 font-semibold hover:text-accent-light dark:hover:text-accent-dark transition-colors duration-200">
+                                {{ $author.Name }}
+                            </a>
+                        {{ else }}
+                            {{ $author.Name }}
+                        {{ end }}
+                    </td>
+                    <td class="px-4 py-3 align-top">
+                        {{ if $isPlaceholder }}
+                            <span class="font-semibold text-text-primary-light dark:text-text-primary-dark">{{ .Title }}</span>
+                        {{ else }}
+                            <a href="{{ .RelPermalink }}" class="font-semibold hover:text-accent-light dark:hover:text-accent-dark transition-colors duration-200">{{ .Title }}</a>
+                        {{ end }}
+                        <div class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-1 line-clamp-2">{{ .Params.short_description | default .Summary }}</div>
+                    </td>
                     {{ if $showLocation }}
                     <td class="px-4 py-3 align-top text-sm text-text-secondary-light dark:text-text-secondary-dark">{{ with .Params.location }}{{ . }}{{ end }}</td>
                     {{ end }}
@@ -68,18 +120,41 @@ Params:
 
     <!-- Mobile stacked list -->
     <div class="md:hidden divide-y divide-border-primary-light dark:divide-border-primary-dark">
-        {{ range $entries }}
+        {{ range $filtered }}
         {{ $author := partial "presentation-author.html" . }}
+        {{ $isPlaceholder := eq true .Params.placeholder }}
         {{ $entryTracks := slice }}
-        {{ with .Params.tracks }}{{ range . }}{{ $entryTracks = $entryTracks | append . }}{{ end }}{{ end }}
-        {{ with .Params.track }}{{ $entryTracks = $entryTracks | append . }}{{ end }}
+        {{ with .Params.tracks }}
+            {{ range . }}
+                {{ $slug := lower (printf "%v" .) }}
+                {{ $name := or (index $trackNameMap $slug) . }}
+                {{ $entryTracks = $entryTracks | append $name }}
+            {{ end }}
+        {{ end }}
+        {{ with .Params.track }}
+            {{ $slug := lower (printf "%v" .) }}
+            {{ $name := or (index $trackNameMap $slug) . }}
+            {{ $entryTracks = $entryTracks | append $name }}
+        {{ end }}
+        {{ $displayTime := "" }}
+        {{ with .Params.period }}
+            {{ if (in (printf "%T" .) "Time") }}
+                {{ $displayTime = partial "format_datetime.html" (dict "date" . "format" $timeFormat) }}
+            {{ else }}
+                {{ $displayTime = . }}
+            {{ end }}
+        {{ else }}
+            {{ $displayTime = partial "format_datetime.html" (dict "date" .Date "format" $timeFormat) }}
+        {{ end }}
         <div class="p-4">
-            <div class="text-xs uppercase tracking-wide text-text-secondary-light dark:text-text-secondary-dark mb-1">
-                {{ with .Params.period }}{{ . }}{{ else }}{{ partial "format_datetime.html" (dict "date" .Date "format" "datetime") }}{{ end }}
-            </div>
-            <a href="{{ .RelPermalink }}" class="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark hover:text-accent-light dark:hover:text-accent-dark transition-colors duration-200">{{ .Title }}</a>
+            <div class="text-xs uppercase tracking-wide text-text-secondary-light dark:text-text-secondary-dark mb-1">{{ $displayTime }}</div>
+            {{ if $isPlaceholder }}
+                <span class="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark">{{ .Title }}</span>
+            {{ else }}
+                <a href="{{ .RelPermalink }}" class="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark hover:text-accent-light dark:hover:text-accent-dark transition-colors duration-200">{{ .Title }}</a>
+            {{ end }}
             <div class="text-sm text-text-secondary-light dark:text-text-secondary-dark mt-1">
-                {{ if $author.Link }}
+                {{ if and $author.Link (not $isPlaceholder) }}
                     <a href="{{ $author.Link }}" class="inline-flex items-center gap-1 font-semibold hover:text-accent-light dark:hover:text-accent-dark transition-colors duration-200">
                         {{ $author.Name }}
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 opacity-70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>

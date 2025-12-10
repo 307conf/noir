@@ -1,5 +1,5 @@
 [day]
-other = "Day"
+other = "Dia"
 
 [sponsorsTitle]
 other = "Patrocinadores"
@@ -8,89 +8,89 @@ other = "Patrocinadores"
 other = "Agenda"
 
 [trainingsTitle]
-other = "Trainings"
+other = "Treinamentos"
 
 [villagesTitle]
 other = "Villages"
 
 [viewAll]
-other = "View All"
+other = "Ver Tudo"
 
 [localTimeLabel]
-other = "Local Time:"
+other = "Hora Local:"
 
 [brTimeLabel]
-other = "Brasília Time"
+other = "Horário de Brasília"
 
 [menuTitle]
 other = "Menu"
 
 [learnMore]
-other = "Learn More"
+other = "Saiba Mais"
 
 [builtUsing]
-other = "Built using"
+other = "Feito usando"
 
 [takeALookAtMy]
-other = "Take a look at my" 
+other = "Dê uma olhada no meu" 
 
 [supportersLabel]
-other = "Supporters"
+other = "Apoiadores"
 
 [noEntriesYet]
-other = "Entries coming soon."
+other = "Novos conteúdos em breve."
 
 [presentationsTitle]
-other = "Presentations"
+other = "Apresentações"
 
 [fullAddressLabel]
-other = "Full Address"
+other = "Endereço"
 
 [openInMaps]
-other = "View on Maps"
+other = "Ver no mapa"
 
 [eventDateLabel]
-other = "Event date"
+other = "Data do evento"
 
 [talkTimeLabel]
-other = "Time"
+other = "Horário"
 
 [talkTitleLabel]
-other = "Talk"
+other = "Palestra"
 
 [speakerLabel]
-other = "Speaker"
+other = "Palestrante"
 
 [trackLabel]
-other = "Track"
+other = "Trilha"
 
 [locationLabel]
-other = "Location"
+other = "Local"
 
 [speakersTitle]
-other = "Speakers"
+other = "Palestrantes"
 
 [month.1]
 other = "Jan"
 [month.2]
-other = "Feb"
+other = "Fev"
 [month.3]
 other = "Mar"
 [month.4]
-other = "Apr"
+other = "Abr"
 [month.5]
-other = "May"
+other = "Mai"
 [month.6]
 other = "Jun"
 [month.7]
 other = "Jul"
 [month.8]
-other = "Aug"
+other = "Ago"
 [month.9]
-other = "Sep"
+other = "Set"
 [month.10]
-other = "Oct"
+other = "Out"
 [month.11]
 other = "Nov"
 [month.12]
-other = "Dec"
+other = "Dez"
