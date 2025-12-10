@@ -94,3 +94,6 @@ other = "Oct"
 other = "Nov"
 [month.12]
 other = "Dec"
+
+[secureYourSeat]
+other = "Secure your seat"

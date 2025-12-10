@@ -1,6 +1,6 @@
 {{ define "main" }}
 <div class="max-w-6xl mx-auto px-4 py-12">
-    <h1 class="text-4xl md:text-5xl font-bold mb-6 text-text-primary-light dark:text-text-primary-dark">{{ .Title }}</h1>
+    <h1 class="text-4xl md:text-5xl font-bold mb-6 text-cyan-200">{{ .Title }}</h1>
     {{ with .Content }}
     <div class="prose prose-invert mb-10">
         {{ . }}
@@ -10,14 +10,14 @@
     {{ if .Pages }}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         {{ range .Pages }}
-        <article class="border border-border-primary-light dark:border-border-primary-dark rounded-xl p-6 bg-bg-primary-light dark:bg-bg-secondary-dark shadow-sm hover:shadow-lg transition-all duration-300">
+        <article class="border border-cyan-500/20 rounded-xl p-6 bg-white/5 backdrop-blur shadow-sm hover:shadow-lg transition-all duration-300">
             {{ with .Params.role }}
             <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wide mb-2">
                 {{ . }}
             </p>
             {{ end }}
             <a href="{{ .RelPermalink }}" class="block">
-                <h2 class="text-2xl font-semibold text-text-primary-light dark:text-text-primary-dark hover:text-accent-light dark:hover:text-accent-dark transition-colors duration-200">
+                <h2 class="text-2xl font-semibold text-cyan-200 hover:text-white transition-colors duration-200">
                     {{ .Title }}
                 </h2>
             </a>

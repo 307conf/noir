@@ -61,3 +61,6 @@ other = "Oct"
 other = "Nov"
 [month.12]
 other = "Dic"
+
+[secureYourSeat]
+other = "Garanta su ticket"

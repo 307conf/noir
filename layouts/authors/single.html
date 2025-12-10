@@ -5,13 +5,13 @@
 {{ $sectionLabels := dict "agenda" (T "agendaTitle") "presentations" (T "presentationsTitle") "trainings" (T "trainingsTitle") "villages" (T "villagesTitle") }}
 
 <div class="max-w-6xl mx-auto px-4 py-12">
-    <div class="bg-bg-primary-light dark:bg-bg-secondary-dark border border-border-primary-light dark:border-border-primary-dark rounded-2xl p-8 mb-10 shadow-lg">
+    <div class="bg-white/5 backdrop-blur border border-cyan-500/20 rounded-2xl p-8 mb-10 shadow-lg">
         {{ with .Params.role }}
-        <p class="text-sm uppercase tracking-wide text-text-secondary-light dark:text-text-secondary-dark mb-2">{{ . }}</p>
+        <p class="text-sm uppercase tracking-wide text-slate-300 mb-2">{{ . }}</p>
         {{ end }}
-        <h1 class="text-4xl md:text-5xl font-bold text-text-primary-light dark:text-text-primary-dark mb-4">{{ .Title }}</h1>
+        <h1 class="text-4xl md:text-5xl font-bold text-cyan-200 mb-4">{{ .Title }}</h1>
         {{ with .Description }}
-        <p class="text-text-secondary-light dark:text-text-secondary-dark text-lg mb-4">{{ . }}</p>
+        <p class="text-slate-200 text-lg mb-4">{{ . }}</p>
         {{ end }}
         <div class="prose prose-invert max-w-none">
             {{ .Content }}
@@ -19,25 +19,25 @@
     </div>
 
     <section class="mt-12">
-        <h2 class="text-3xl font-bold mb-6 text-text-primary-light dark:text-text-primary-dark">{{ T "presentationsTitle" }}</h2>
+        <h2 class="text-3xl font-bold mb-6 text-cyan-200">{{ T "presentationsTitle" }}</h2>
         {{ if $publications }}
         <div class="space-y-5">
             {{ range $publications }}
             {{ $label := index $sectionLabels .Section | default (title .Section) }}
-            <article class="border border-border-primary-light dark:border-border-primary-dark rounded-xl p-5 bg-bg-primary-light dark:bg-bg-secondary-dark hover:border-accent-light dark:hover:border-accent-dark transition-all duration-300">
-                <a href="{{ .RelPermalink }}" class="inline-flex items-center text-2xl font-semibold text-accent-light dark:text-accent-dark hover:text-text-primary-light dark:hover:text-text-primary-dark transition-colors duration-200">
+            <article class="border border-cyan-500/20 rounded-xl p-5 bg-white/5 backdrop-blur hover:border-cyan-400/50 transition-all duration-300">
+                <a href="{{ .RelPermalink }}" class="inline-flex items-center text-2xl font-semibold text-cyan-200 hover:text-white transition-colors duration-200">
                     {{ .Title }}
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2">
                         <path d="M7 17l9.2-9.2M17 17V7H7"/>
                     </svg>
                 </a>
-                <p class="text-text-secondary-light dark:text-text-secondary-dark mt-2">
+                <p class="text-slate-200 mt-2">
                     {{ .Summary | default (.Params.short_description | default .Description) }}
                 </p>
-                 <div class="flex py-5 items-center gap-2 text-xs uppercase tracking-wide text-text-secondary-light dark:text-text-secondary-dark mb-2">
+                 <div class="flex py-5 items-center gap-2 text-xs uppercase tracking-wide text-slate-300 mb-2">
                     <!-- location/pin icon -->
                     <svg xmlns="http://www.w3.org/2000/svg" class="text-gray-400" width="24" height="24" viewBox="-7 -2 24 24"><path fill="currentColor" d="M4 9.9A5.002 5.002 0 0 1 5 0a5 5 0 0 1 1 9.9V19a1 1 0 0 1-2 0V9.9zM5 8a3 3 0 1 0 0-6a3 3 0 0 0 0 6z"/></svg>
-                    <span class="px-2 py-0.5 rounded-full bg-bg-tertiary-light dark:bg-bg-tertiary-dark">{{ .Params.location }}</span>
+                    <span class="px-2 py-0.5 rounded-full bg-white/10 text-white">{{ .Params.location }}</span>
                     <!-- calendar/period icon -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="opacity-90">
                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke="currentColor" fill="none"></rect>
