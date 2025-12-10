@@ -48,7 +48,6 @@ Example (TOML):
 +++
 title = "João Vitor (@keowu)"
 description = "Short bio"
-date = 2025-11-12T09:00:00-03:00
 slug = "joao-vitor-keowu"
 role = "Sr. Security Researcher"
 +++
