@@ -14,6 +14,7 @@
 
 {{- $filtered := slice -}}
 {{- range $pages }}
+  {{- $isPlaceholder := eq true .Params.placeholder -}}
   {{- $pageTracks := slice -}}
   {{- with .Params.tracks }}
     {{- range . }}
@@ -26,7 +27,7 @@
   {{- $pageTracks = uniq $pageTracks -}}
 
   {{- /* If no filter is set, or if the presentation has no track, include it. */ -}}
-  {{- $matches := or $allowAll (eq (len $pageTracks) 0) -}}
+  {{- $matches := or $allowAll (eq (len $pageTracks) 0) $isPlaceholder -}}
   {{- if and (not $matches) (gt (len (intersect $allowed $pageTracks)) 0) }}
     {{- $matches = true -}}
   {{- end }}

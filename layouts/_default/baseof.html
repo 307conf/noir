@@ -103,6 +103,20 @@
             .tech-slide {
                 float: left;
             }
+            /* Restore default list styling removed by Tailwind preflight (placed after Tailwind injects CSS) */
+            main ul, main ol {
+                margin: 0.75rem 0 1rem 1.5rem;
+                padding-left: 1rem;
+                list-style-position: outside;
+            }
+            main ul { list-style: disc !important; }
+            main ol { list-style: decimal !important; }
+            main li { margin-bottom: 0.35rem; }
+            main li > ul,
+            main li > ol {
+                margin-top: 0.35rem;
+                margin-bottom: 0;
+            }
         </style>
     </head>
     <body class="min-h-screen bg-bg-primary-light dark:bg-bg-primary-dark text-text-primary-light dark:text-text-primary-dark">

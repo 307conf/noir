@@ -25,7 +25,6 @@
             {{ if $author.Link }}
             <a href="{{ $author.Link }}" class="group text-md font-bold inline-flex items-center gap-2 font-medium hover:text-accent-light dark:hover:text-accent-dark transition-colors duration-200 w-fit">
                 {{ $author.Name }}
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-70 group-hover:opacity-100 transition-opacity duration-200"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
             </a>
             {{ else }}
             <p class="text-md uppercase tracking-wide text-text-secondary-light dark:text-text-secondary-dark">{{ $author.Name }}</p>
@@ -42,10 +41,10 @@
                 <p class="text-gray-400 text-md">{{ with .Params.period }}{{ partial "format_datetime.html" (dict "date" . "format" "datetime") }}{{ else }}{{ partial "format_datetime.html" (dict "date" .Date "format" "datetime") }}{{ end }}</p>
             </span>
 
-            <!-- Location -->
+            <!-- Track -->
             <span class="flex items-center gap-2 py-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="opacity-90" width="16" height="16" viewBox="-7 -2 24 24"><path fill="currentColor" d="M4 9.9A5.002 5.002 0 0 1 5 0a5 5 0 0 1 1 9.9V19a1 1 0 0 1-2 0V9.9zM5 8a3 3 0 1 0 0-6a3 3 0 0 0 0 6z"/></svg>
-                <p class="text-gray-400 text-md">{{ with .Params.location }}{{ . }}{{ end }}</p>
+                <p class="text-gray-400 text-md">{{ with .Params.track }}{{ . }}{{ end }}</p>
             </span>
         </div>
         {{ with .Description }}
