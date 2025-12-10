@@ -12,9 +12,11 @@
                 <img src="{{ $avatar }}" alt="{{ .Title }}" class="h-full w-full object-cover">
             </div>
             <div class="flex-1 space-y-2">
-                <h1 class="text-4xl md:text-5xl font-bold text-cyan-200">{{ .Title }}</h1>
+                <h1 class="text-4xl md:text-5xl font-bold text-cyan-300">{{ .Title }}</h1>
                 {{ with .Params.role }}
-                <p class="text-slate-200 text-lg">{{ . }}</p>
+                <p class="text-lg uppercase tracking-[0.3em] text-cyan-300 mb-3 flex items-center gap-2">
+                    <span class="inline-flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span> {{ . }}
+                </p>
                 {{ end }}
                 <div class="prose prose-invert max-w-none">
                     {{ .Content }}

@@ -1,6 +1,6 @@
 {{ define "main" }}
 <div class="max-w-6xl mx-auto px-4 py-12">
-    <h1 class="text-4xl md:text-5xl font-bold mb-6 text-cyan-200">{{ .Title }}</h1>
+    <h1 class="text-4xl md:text-5xl font-bold mb-6 text-cyan-300">{{ .Title }}</h1>
     {{ with .Content }}
     <div class="prose prose-invert mb-10">
         {{ . }}
@@ -22,7 +22,9 @@
                     </h2>
                 </a>
                 {{ with .Params.role }}
-                <p class="text-xs uppercase tracking-wide text-slate-300">{{ . }}</p>
+                <p class="text-xs uppercase tracking-[0.3em] text-cyan-300 mb-3 flex items-center gap-2">
+                    <span class="inline-flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span> {{ . }}
+                </p>
                 {{ end }}
                 <p class="text-text-secondary-light dark:text-text-secondary-dark line-clamp-3">
                     {{ .Description | default (.Summary | default (.Params.bio)) }}

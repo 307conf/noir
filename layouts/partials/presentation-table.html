@@ -94,7 +94,7 @@ Params:
                     {{ end }}
                     <td class="px-4 py-3 align-top text-sm text-text-secondary-light dark:text-text-secondary-dark">
                         {{ if and $author.Link (not $isPlaceholder) }}
-                            <a href="{{ $author.Link }}" class="inline-flex items-center gap-1 font-semibold hover:text-accent-light dark:hover:text-accent-dark transition-colors duration-200">
+                            <a href="{{ $author.Link }}" class="inline-flex items-center gap-1 font-semibold hover:text-accent-light text-cyan-300 dark:hover:text-accent-dark transition-colors duration-200">
                                 {{ $author.Name }}
                             </a>
                         {{ else }}
@@ -103,9 +103,9 @@ Params:
                     </td>
                     <td class="px-4 py-3 align-top">
                         {{ if $isPlaceholder }}
-                            <span class="font-semibold text-text-primary-light dark:text-text-primary-dark">{{ .Title }}</span>
+                            <span class="font-semibold text-text-primary-light tracking-[0.3em] text-cyan-600 dark:text-text-primary-dark">{{ .Title }}</span>
                         {{ else }}
-                            <a href="{{ .RelPermalink }}" class="font-semibold hover:text-accent-light dark:hover:text-accent-dark transition-colors duration-200">{{ .Title }}</a>
+                            <a href="{{ .RelPermalink }}" class="font-semibold hover:text-accent-light  text-cyan-300 dark:hover:text-accent-dark transition-colors duration-200">{{ .Title }}</a>
                         {{ end }}
                         <div class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-1 line-clamp-2">{{ .Params.short_description | default .Summary }}</div>
                     </td>

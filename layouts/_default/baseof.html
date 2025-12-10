@@ -67,7 +67,9 @@
         <style>
             :root {
                 color-scheme: light dark;
+                --heading-color: #0ea5e9; /* cyan-600 for light mode */
             }
+            html.dark { --heading-color: #a5f3fc; } /* cyan-200 for dark mode */
             
             .tech-icon {
                 filter: grayscale(100%) brightness(200%);
@@ -116,6 +118,33 @@
             main li > ol {
                 margin-top: 0.35rem;
                 margin-bottom: 0;
+            }
+            /* Headings and typography for markdown content */
+            main h1, main h2, main h3, main h4, main h5, main h6 {
+                font-weight: 700;
+                line-height: 1.2;
+                margin: 1.25rem 0 0.75rem;
+            }
+            main h1 { font-size: 2.25rem; }
+            main h2 { font-size: 1.875rem; }
+            main h3 { font-size: 1.5rem; }
+            main h4 { font-size: 1.25rem; }
+            main h5 { font-size: 1.125rem; }
+            main h6 { font-size: 1rem; letter-spacing: 0.02em; text-transform: uppercase; }
+            main :where(h1, h2, h3, h4, h5, h6):not(.glitch-title) {
+                color: var(--heading-color) !important;
+            }
+            main prose p {
+                margin: 0 0 1rem;
+                line-height: 1.65;
+            }
+            main strong { font-weight: 700; }
+            main em { font-style: italic; }
+            main blockquote {
+                margin: 1rem 0;
+                padding: 0.75rem 1rem;
+                border-left: 4px solid #38bdf8;
+                background: rgba(56, 189, 248, 0.08);
             }
         </style>
     </head>
