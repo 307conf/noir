@@ -19,10 +19,12 @@ Params:
 
 {{- /* Map track slug to village title for the current language */ -}}
 {{- $trackNameMap := dict -}}
-{{- $villagePages := where (where $siteCtx.RegularPages "Section" "villages") "Language.Lang" $lang.Lang -}}
+{{- $villagePages := where (where $siteCtx.Pages "Section" "villages") "Language.Lang" $lang.Lang -}}
+{{- $villagePages = where $villagePages "IsNode" true -}} {{/* only section/term nodes, skip leaf talks under villages */}}
 {{- range $villagePages }}
-    {{- with .Params.track }}
-        {{- $trackNameMap = merge $trackNameMap (dict (lower (printf "%v" .)) .Title) -}}
+    {{- $page := . -}}
+    {{- with $page.Params.track }}
+        {{- $trackNameMap = merge $trackNameMap (dict (lower (printf "%v" .)) $page.Title) -}}
     {{- end }}
 {{- end }}
 
