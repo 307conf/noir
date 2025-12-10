@@ -6,15 +6,20 @@
 
 <div class="max-w-6xl mx-auto px-4 py-12">
     <div class="bg-white/5 backdrop-blur border border-cyan-500/20 rounded-2xl p-8 mb-10 shadow-lg">
-        {{ with .Params.role }}
-        <p class="text-sm uppercase tracking-wide text-slate-300 mb-2">{{ . }}</p>
-        {{ end }}
-        <h1 class="text-4xl md:text-5xl font-bold text-cyan-200 mb-4">{{ .Title }}</h1>
-        {{ with .Description }}
-        <p class="text-slate-200 text-lg mb-4">{{ . }}</p>
-        {{ end }}
-        <div class="prose prose-invert max-w-none">
-            {{ .Content }}
+        {{ $avatar := .Params.avatar | default .Params.image | default "/images/speakers/speaker.png" }}
+        <div class="flex items-start gap-4 mb-4">
+            <div class="h-48 w-48 rounded-2xl overflow-hidden border border-cyan-400/30 bg-black/30 shrink-0">
+                <img src="{{ $avatar }}" alt="{{ .Title }}" class="h-full w-full object-cover">
+            </div>
+            <div class="flex-1 space-y-2">
+                <h1 class="text-4xl md:text-5xl font-bold text-cyan-200">{{ .Title }}</h1>
+                {{ with .Params.role }}
+                <p class="text-slate-200 text-lg">{{ . }}</p>
+                {{ end }}
+                <div class="prose prose-invert max-w-none">
+                    {{ .Content }}
+                </div>
+            </div>
         </div>
     </div>
 
@@ -37,7 +42,7 @@
                  <div class="flex py-5 items-center gap-2 text-xs uppercase tracking-wide text-slate-300 mb-2">
                     <!-- location/pin icon -->
                     <svg xmlns="http://www.w3.org/2000/svg" class="text-gray-400" width="24" height="24" viewBox="-7 -2 24 24"><path fill="currentColor" d="M4 9.9A5.002 5.002 0 0 1 5 0a5 5 0 0 1 1 9.9V19a1 1 0 0 1-2 0V9.9zM5 8a3 3 0 1 0 0-6a3 3 0 0 0 0 6z"/></svg>
-                    <span class="px-2 py-0.5 rounded-full bg-white/10 text-white">{{ .Params.location }}</span>
+                    <span class="px-2 py-0.5 rounded-full bg-white/10 text-white">{{ .Params.track }}</span>
                     <!-- calendar/period icon -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="opacity-90">
                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke="currentColor" fill="none"></rect>
@@ -45,7 +50,7 @@
                             <path d="M3 10h18" stroke="currentColor"></path>
                             <path d="M8 14h4v4" stroke="currentColor"></path>
                         </svg>
-                    <span>{{ .Params.Period }}</span>
+                    <span>{{ partial "format_datetime.html" (dict "date" .Params.date "format" "datetime") }}</span>
                 </div>
             </article>
             {{ end }}
