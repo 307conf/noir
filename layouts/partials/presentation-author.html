@@ -1,35 +1,50 @@
-{{- /* Returns a dict { Name, Link } for a presentation author. */ -}}
+{{- /* Returns a dict with:
+      - Name: aggregated string of author names.
+      - Link: primary author link (first available).
+      - Items: slice of { Name, Link } for each author.
+*/ -}}
 {{- $page := . -}}
-{{- $name := $page.Params.author | default ($page.Param "author") -}}
-{{- $link := $page.Params.author_link | default ($page.Param "author_link") | default "" -}}
+{{- $items := slice -}}
 
-{{- $primary := "" -}}
-{{- with $page.Params.authors }}
-    {{- if gt (len .) 0 }}
-        {{- $primary = index . 0 -}}
-    {{- end }}
-{{- end }}
-
-{{- if $primary }}
-    {{- $authorPage := $page.Site.GetPage (printf "%s/authors/%s" $page.Language.Lang $primary) -}}
+{{/* Build author list from `authors` (preferred) or `author`/`author_link`. */}}
+{{- $authors := $page.Params.authors | default (slice) -}}
+{{- if gt (len $authors) 0 }}
+  {{- range $authors }}
+    {{- $slug := printf "%v" . -}}
+    {{- $name := "" -}}
+    {{- $link := "" -}}
+    {{- $authorPage := $page.Site.GetPage (printf "%s/authors/%s" $page.Language.Lang $slug) -}}
     {{- if not $authorPage }}
-        {{- $authorPage = $page.Site.GetPage (printf "authors/%s" $primary) -}}
+      {{- $authorPage = $page.Site.GetPage (printf "authors/%s" $slug) -}}
     {{- end }}
     {{- if not $authorPage }}
-        {{- $authorPage = $page.Site.GetPage (printf "%s/authors/%s.md" $page.Language.Lang $primary) -}}
+      {{- $authorPage = $page.Site.GetPage (printf "%s/authors/%s.md" $page.Language.Lang $slug) -}}
     {{- end }}
     {{- with $authorPage }}
-        {{- $name = .Title -}}
-        {{- $link = .RelPermalink -}}
+      {{- $name = .Title -}}
+      {{- $link = .RelPermalink -}}
     {{- else }}
-        {{- if not $name }}
-            {{- $name = $primary -}}
-        {{- end }}
+      {{- $name = $slug -}}
     {{- end }}
+    {{- $items = $items | append (dict "Name" $name "Link" $link) -}}
+  {{- end }}
+{{- else }}
+  {{- $name := $page.Params.author | default ($page.Param "author") | default "—" -}}
+  {{- $link := $page.Params.author_link | default ($page.Param "author_link") | default "" -}}
+  {{- $items = $items | append (dict "Name" $name "Link" $link) -}}
 {{- end }}
 
-{{- if not $name }}
-    {{- $name = "—" -}}
+{{- if lt (len $items) 1 }}
+  {{- $items = slice (dict "Name" "—" "Link" "") -}}
 {{- end }}
 
-{{- return (dict "Name" $name "Link" $link) -}}
+{{- $names := slice -}}
+{{- $primaryLink := "" -}}
+{{- range $i, $a := $items }}
+  {{- $names = $names | append $a.Name -}}
+  {{- if and (not $primaryLink) $a.Link }}
+    {{- $primaryLink = $a.Link -}}
+  {{- end }}
+{{- end }}
+
+{{- return (dict "Name" (delimit $names ", ") "Link" $primaryLink "Items" $items) -}}
