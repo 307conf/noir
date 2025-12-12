@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,17 +14,10 @@
         <link rel="preload" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" as="style">            
         <style>
             html, body {
-                background-color: #FFFFFF; 
-                color: #1f2937; 
-            }
-            html.dark, html.dark body {
                 background-color: #121212; 
                 color: #f3f4f6; 
             }
             .border { 
-                border-color: #d4d4d8; 
-            }
-            html.dark .border {
                 border-color: #374151; 
             }
             .carousel-item {
@@ -58,18 +51,14 @@
         <script src="https://cdn.tailwindcss.com"></script>
         <link rel="stylesheet" type='text/css' href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
         <script>
-            if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-            }
+            // Force dark mode as the only theme
+            document.documentElement.classList.add('dark');
         </script>
         <style>
             :root {
-                color-scheme: light dark;
-                --heading-color: #0ea5e9; /* cyan-600 for light mode */
+                color-scheme: dark;
+                --heading-color: #0ea5e9;
             }
-            html.dark { --heading-color: #a5f3fc; } /* cyan-200 for dark mode */
             
             .tech-icon {
                 filter: grayscale(100%) brightness(200%);
@@ -146,9 +135,12 @@
                 border-left: 4px solid #38bdf8;
                 background: rgba(56, 189, 248, 0.08);
             }
+            section :where(a):not(.glitch-title) {
+                color: var(--heading-color) !important;
+            }
         </style>
     </head>
-    <body class="min-h-screen bg-bg-primary-light dark:bg-bg-primary-dark text-text-primary-light dark:text-text-primary-dark">
+    <body class="min-h-screen bg-bg-primary-dark text-text-primary-dark">
         {{ partial "header" . }}
         <main>
             {{ block "main" . }}{{ end }}

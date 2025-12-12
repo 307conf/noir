@@ -12,7 +12,7 @@
                 <img src="{{ $avatar }}" alt="{{ .Title }}" class="h-full w-full object-cover">
             </div>
             <div class="flex-1 space-y-2">
-                <h1 class="text-4xl md:text-5xl font-bold text-cyan-300">{{ .Title }}</h1>
+                <h1 class="text-4xl md:text-5xl font-bold">{{ .Title }}</h1>
                 {{ with .Params.role }}
                 <p class="text-lg uppercase tracking-[0.3em] text-cyan-300 mb-3 flex items-center gap-2">
                     <span class="inline-flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span> {{ . }}
@@ -26,19 +26,19 @@
     </div>
 
     <section class="mt-12">
-        <h2 class="text-3xl font-bold mb-6 text-cyan-200">{{ T "presentationsTitle" }}</h2>
+        <h2 class="text-3xl font-bold mb-6">{{ T "presentationsTitle" }}</h2>
         {{ if $publications }}
         <div class="space-y-5">
             {{ range $publications }}
             {{ $label := index $sectionLabels .Section | default (title .Section) }}
             <article class="border border-cyan-500/20 rounded-xl p-5 bg-white/5 backdrop-blur hover:border-cyan-400/50 transition-all duration-300">
-                <a href="{{ .RelPermalink }}" class="inline-flex items-center text-2xl font-semibold text-cyan-200 hover:text-white transition-colors duration-200">
+                <a href="{{ .RelPermalink }}" class="inline-flex items-center text-2xl font-semibold transition-colors duration-200">
                     {{ .Title }}
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2">
                         <path d="M7 17l9.2-9.2M17 17V7H7"/>
                     </svg>
                 </a>
-                <p class="text-slate-200 mt-2">
+                <p class="mt-2">
                     {{ .Summary | default (.Params.short_description | default .Description) }}
                 </p>
                  <div class="flex py-5 items-center gap-2 text-xs uppercase tracking-wide text-slate-300 mb-2">
