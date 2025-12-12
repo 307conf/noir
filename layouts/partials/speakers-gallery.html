@@ -9,6 +9,7 @@
 {{- if not $pages }}
   {{- $pages = where (where site.RegularPages "Section" "authors") "Language.Lang" $ctx.Language.Lang -}}
 {{- end }}
+{{- $pages = shuffle $pages -}}
 {{- if $ctx.Limit }}
   {{- $pages = first $ctx.Limit $pages -}}
 {{- end }}
@@ -76,6 +77,12 @@
   const prev = root.querySelector('[data-carousel-prev]');
   const next = root.querySelector('[data-carousel-next]');
   if (!track || !prev || !next) return;
+
+  // Shuffle items on each page load so order is random client-side
+  const items = Array.from(track.querySelectorAll('[data-carousel-item]'));
+  if (items.length) {
+    items.sort(() => Math.random() - 0.5).forEach(item => track.appendChild(item));
+  }
 
   const getStep = () => {
     const card = track.querySelector('[data-carousel-item]');
