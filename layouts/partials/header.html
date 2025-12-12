@@ -81,8 +81,9 @@
                 </div> -->
                 <!-- Language Switcher - Desktop -->
                 <div class="language-switcher ml-4">
-                    <div class="language-switcher-btn text-lg text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark transition-colors duration-300 p-2 rounded-md">
-                        {{ .Language.Lang | upper }}
+                    {{ $currentFlag := cond (eq .Language.Lang "pt-br") "🇧🇷" "🇺🇸" }}
+                    <div class="language-switcher-btn text-lg text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark transition-colors duration-300 p-2 rounded-md" aria-label="{{ .Language.LanguageName }}">
+                        <span aria-hidden="true">{{ $currentFlag }}</span>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="m6 9 6 6 6-6"/>
                         </svg>
@@ -95,9 +96,11 @@
                                 {{ $translation = index $foundTranslations 0 }}
                             {{ end }}
                             {{ $isCurrentLang := eq .Lang $.Language.Lang }}
+                            {{ $flag := cond (eq .Lang "pt-br") "🇧🇷" "🇺🇸" }}
                             <a href="{{ if $translation }}{{ $translation.Permalink }}{{ else }}{{ .Lang | absLangURL }}{{ end }}" 
-                               class="{{ if $isCurrentLang }}language-active{{ end }} text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark transition-colors duration-300">
-                                {{ .LanguageName }}
+                               class="{{ if $isCurrentLang }}language-active{{ end }} text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark transition-colors duration-300 flex items-center gap-2">
+                                <span aria-hidden="true">{{ $flag }}</span>
+                                <span class="sr-only">{{ .LanguageName }}</span>
                             </a>
                         {{ end }}
                     </div>
@@ -114,8 +117,9 @@
                 <div class="flex items-center gap-4">
                     <!-- Language Switcher - Mobile -->
                     <div class="language-switcher">
-                        <div class="language-switcher-btn text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark transition-colors duration-300 flex items-center p-2 rounded-md">
-                            {{ .Language.Lang | upper }}
+                        {{ $currentFlagMobile := cond (eq .Language.Lang "pt-br") "🇧🇷" "🇺🇸" }}
+                        <div class="language-switcher-btn text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark transition-colors duration-300 flex items-center p-2 rounded-md" aria-label="{{ .Language.LanguageName }}">
+                            <span aria-hidden="true">{{ $currentFlagMobile }}</span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="m6 9 6 6 6-6"/>
                             </svg>
@@ -128,9 +132,11 @@
                                     {{ $translation = index $foundTranslationsMobile 0 }}
                                 {{ end }}
                                 {{ $isCurrentLang := eq .Lang $.Language.Lang }}
+                                {{ $flag := cond (eq .Lang "pt-br") "🇧🇷" "🇺🇸" }}
                                 <a href="{{ if $translation }}{{ $translation.Permalink }}{{ else }}{{ .Lang | absLangURL }}{{ end }}" 
-                                   class="{{ if $isCurrentLang }}language-active{{ end }} text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark transition-colors duration-300">
-                                    {{ .LanguageName }}
+                                   class="{{ if $isCurrentLang }}language-active{{ end }} text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark transition-colors duration-300 flex items-center gap-2">
+                                    <span aria-hidden="true">{{ $flag }}</span>
+                                    <span class="sr-only">{{ .LanguageName }}</span>
                                 </a>
                             {{ end }}
                         </div>

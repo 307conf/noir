@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="{{ .Language.Lang }}" class="dark">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -135,7 +135,7 @@
                 border-left: 4px solid #38bdf8;
                 background: rgba(56, 189, 248, 0.08);
             }
-            section :where(a):not(.glitch-title) {
+            section .presentation-title :where(a):not(.glitch-title) {
                 color: var(--heading-color) !important;
             }
         </style>
