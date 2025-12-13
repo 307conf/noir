@@ -28,6 +28,9 @@ other = "Menu"
 [learnMore]
 other = "Learn More"
 
+[viewSlides]
+other = "View slides"
+
 [builtUsing]
 other = "Built using"
 
