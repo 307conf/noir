@@ -80,7 +80,6 @@ url = "https://example.com/cert-gcp"
 company = "Lorem Technologies"
 role = "AI Research Engineer"
 period = "Jan 2023 - Dec 2023"
-logo = "/images/company/lorem.png"
 description = "Ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore."
 responsibilities = [
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
@@ -93,7 +92,6 @@ responsibilities = [
 company = "Ipsum Solutions"
 role = "Machine Learning Engineer"
 period = "Jun 2022 - Dec 2022"
-logo = "/images/company/ipsum.png"
 description = "Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
 responsibilities = [
     "Sed ut perspiciatis unde omnis iste natus error",
@@ -106,7 +104,6 @@ responsibilities = [
 company = "Dolor Analytics"
 role = "Data Scientist"
 period = "Jan 2022 - May 2022"
-logo = "/images/company/dolor.png"
 description = "Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit."
 responsibilities = [
     "Nam libero tempore, cum soluta nobis est eligendi",

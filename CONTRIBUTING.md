@@ -34,7 +34,6 @@ period = "TDB"
 location = "Sala 1"
 short_description = "Breve descrição"
 summary = "Resumo em mais detalhes"
-logo = "/images/speakers/joao-vitor.png"
 weight = 1
 +++
 ```
