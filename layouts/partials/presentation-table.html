@@ -4,10 +4,12 @@ Params:
 - Pages: slice of pages to render.
 - ShowTracks: bool (default true)
 - ShowLocation: bool (default false)
+- ShowSlides: bool (default false)
 */ -}}
 {{- $pages := .Pages | default (slice) -}}
 {{- $showTracks := cond (isset . "ShowTracks") .ShowTracks true -}}
 {{- $showLocation := cond (isset . "ShowLocation") .ShowLocation true -}}
+{{- $showSlides := cond (isset . "ShowSlides") .ShowSlides false -}}
 {{- $siteCtx := .Site | default site -}}
 {{- $lang := .Language | default $siteCtx.Language -}}
 {{- $entries := sort $pages "Date" "asc" -}}
@@ -50,6 +52,7 @@ Params:
                     {{ if $showTracks }}<th class="px-4 py-3 font-semibold uppercase tracking-wide text-[11px]">{{ T "trackLabel" }}</th>{{ end }}
                     <th class="px-4 py-3 font-semibold uppercase tracking-wide text-[11px]">{{ T "speakerLabel" }}</th>
                     <th class="px-4 py-3 font-semibold uppercase tracking-wide text-[11px]">{{ T "talkTitleLabel" }}</th>
+                    {{ if $showSlides }}<th class="px-4 py-3 font-semibold uppercase tracking-wide text-[11px] text-center">{{ T "slidesLabel" | default "Slides" }}</th>{{ end }}
                     {{ if $showLocation }}<th class="px-4 py-3 font-semibold uppercase tracking-wide text-[11px]">{{ T "locationLabel" }}</th>{{ end }}
                 </tr>
             </thead>
@@ -57,6 +60,13 @@ Params:
                 {{ range $filtered }}
                 {{ $author := partial "presentation-author.html" . }}
                 {{ $isPlaceholder := eq true .Params.placeholder }}
+                {{ $slidesPath := .Params.slides }}
+                {{ $normalizedSlides := "" }}
+                {{ $hasSlides := false }}
+                {{ with $slidesPath }}
+                    {{ $normalizedSlides = strings.TrimPrefix "/" . }}
+                    {{ $hasSlides = fileExists (printf "static/%s" $normalizedSlides) }}
+                {{ end }}
                 {{ $entryTracks := slice }}
                 {{ with .Params.tracks }}
                     {{ range . }}
@@ -118,6 +128,27 @@ Params:
                         {{ end }}
                         <div class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-1 line-clamp-2">{{ .Params.short_description | default .Summary }}</div>
                     </td>
+                    {{ if $showSlides }}
+                    <td class="px-4 py-3 align-top text-sm text-center">
+                        {{ if and $slidesPath $hasSlides }}
+                            <a href="{{ $slidesPath }}" class="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-emerald-500 to-cyan-500 px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-white shadow-sm hover:from-emerald-400 hover:to-cyan-400 transition-all duration-150" target="_blank" rel="noopener noreferrer" aria-label='{{ T "viewSlides" | default "View slides" }}'>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <path d="M14 2v6h6"/>
+                                    <path d="M12 18v-6m-3 3h6"/>
+                                </svg>
+                            </a>
+                        {{ else }}
+                            <span class="inline-flex items-center justify-center rounded-lg border border-border-primary-light dark:border-border-primary-dark bg-bg-tertiary-light dark:bg-bg-tertiary-dark px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-text-secondary-light dark:text-text-secondary-dark opacity-70 cursor-not-allowed select-none" aria-disabled="true" aria-label='{{ T "slidesUnavailable" | default "Unavailable" }}'>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <path d="M14 2v6h6"/>
+                                    <path d="M9 14h6"/>
+                                </svg>
+                            </span>
+                        {{ end }}
+                    </td>
+                    {{ end }}
                     {{ if $showLocation }}
                     <td class="px-4 py-3 align-top text-sm text-text-secondary-light dark:text-text-secondary-dark">{{ with .Params.location }}{{ . }}{{ end }}</td>
                     {{ end }}
@@ -132,6 +163,13 @@ Params:
         {{ range $filtered }}
         {{ $author := partial "presentation-author.html" . }}
         {{ $isPlaceholder := eq true .Params.placeholder }}
+        {{ $slidesPath := .Params.slides }}
+        {{ $normalizedSlides := "" }}
+        {{ $hasSlides := false }}
+        {{ with $slidesPath }}
+            {{ $normalizedSlides = strings.TrimPrefix "/" . }}
+            {{ $hasSlides = fileExists (printf "static/%s" $normalizedSlides) }}
+        {{ end }}
         {{ $entryTracks := slice }}
         {{ with .Params.tracks }}
             {{ range . }}
@@ -188,6 +226,27 @@ Params:
             {{ end }}
             {{ if $showLocation }}
             <div class="mt-2 text-sm text-text-secondary-light dark:text-text-secondary-dark">{{ with .Params.location }}{{ . }}{{ end }}</div>
+            {{ end }}
+            {{ if $showSlides }}
+            <div class="mt-3">
+                {{ if and $slidesPath $hasSlides }}
+                    <a href="{{ $slidesPath }}" class="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-emerald-500 to-cyan-500 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-white shadow-sm hover:from-emerald-400 hover:to-cyan-400 transition-all duration-150" target="_blank" rel="noopener noreferrer" aria-label='{{ T "viewSlides" | default "View slides" }}'>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <path d="M14 2v6h6"/>
+                            <path d="M12 18v-6m-3 3h6"/>
+                        </svg>
+                    </a>
+                {{ else }}
+                    <span class="inline-flex items-center justify-center rounded-lg border border-border-primary-light dark:border-border-primary-dark bg-bg-tertiary-light dark:bg-bg-tertiary-dark px-3 py-2 text-xs font-semibold uppercase tracking-wide text-text-secondary-light dark:text-text-secondary-dark opacity-70 cursor-not-allowed select-none" aria-disabled="true" aria-label='{{ T "slidesUnavailable" | default "Unavailable" }}'>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <path d="M14 2v6h6"/>
+                            <path d="M9 14h6"/>
+                        </svg>
+                    </span>
+                {{ end }}
+            </div>
             {{ end }}
             <div class="mt-2 text-sm text-text-secondary-light dark:text-text-secondary-dark line-clamp-3">{{ .Summary | default .Params.short_description }}</div>
         </div>
