@@ -29,7 +29,7 @@
     {{ $entries := sort $filtered "Date" "asc" }}
     {{ $timeFormat := or .Params.datetime_format (and .Parent .Parent.Params.datetime_format) | default "HH:mm" }}
 
-    {{ partial "presentation-table.html" (dict "Pages" $entries "ShowTracks" false "ShowLocation" false "Site" .Site "Language" .Language "TimeFormat" $timeFormat) }}
+    {{ partial "presentation-table.html" (dict "Pages" $entries "ShowTracks" false "ShowLocation" false "ShowSlides" true "ShowVideo" true "Site" .Site "Language" .Language "TimeFormat" $timeFormat) }}
 </div>
 {{ else }}
 <div class="max-w-6xl mx-auto px-4 py-12">

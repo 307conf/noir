@@ -5,11 +5,13 @@ Params:
 - ShowTracks: bool (default true)
 - ShowLocation: bool (default false)
 - ShowSlides: bool (default false)
+- ShowVideo: bool (default false)
 */ -}}
 {{- $pages := .Pages | default (slice) -}}
 {{- $showTracks := cond (isset . "ShowTracks") .ShowTracks true -}}
 {{- $showLocation := cond (isset . "ShowLocation") .ShowLocation true -}}
 {{- $showSlides := cond (isset . "ShowSlides") .ShowSlides false -}}
+{{- $showVideo := cond (isset . "ShowVideo") .ShowVideo false -}}
 {{- $siteCtx := .Site | default site -}}
 {{- $lang := .Language | default $siteCtx.Language -}}
 {{- $entries := sort $pages "Date" "asc" -}}
@@ -53,6 +55,7 @@ Params:
                     <th class="px-4 py-3 font-semibold uppercase tracking-wide text-[11px]">{{ T "speakerLabel" }}</th>
                     <th class="px-4 py-3 font-semibold uppercase tracking-wide text-[11px]">{{ T "talkTitleLabel" }}</th>
                     {{ if $showSlides }}<th class="px-4 py-3 font-semibold uppercase tracking-wide text-[11px] text-center">{{ T "slidesLabel" | default "Slides" }}</th>{{ end }}
+                    {{ if $showVideo }}<th class="px-4 py-3 font-semibold uppercase tracking-wide text-[11px] text-center">{{ T "videoLabel" | default "Video" }}</th>{{ end }}
                     {{ if $showLocation }}<th class="px-4 py-3 font-semibold uppercase tracking-wide text-[11px]">{{ T "locationLabel" }}</th>{{ end }}
                 </tr>
             </thead>
@@ -61,6 +64,7 @@ Params:
                 {{ $author := partial "presentation-author.html" . }}
                 {{ $isPlaceholder := eq true .Params.placeholder }}
                 {{ $slidesPath := .Params.slides }}
+                {{ $videoURL := .Params.video_url }}
                 {{ $normalizedSlides := "" }}
                 {{ $hasSlides := false }}
                 {{ with $slidesPath }}
@@ -132,19 +136,24 @@ Params:
                     <td class="px-4 py-3 align-top text-sm text-center">
                         {{ if and $slidesPath $hasSlides }}
                             <a href="{{ $slidesPath }}" class="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-emerald-500 to-cyan-500 px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-white shadow-sm hover:from-emerald-400 hover:to-cyan-400 transition-all duration-150" target="_blank" rel="noopener noreferrer" aria-label='{{ T "viewSlides" | default "View slides" }}'>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                                    <path d="M14 2v6h6"/>
-                                    <path d="M12 18v-6m-3 3h6"/>
-                                </svg>
+                                <i class="cil-airplay text-[14px]" aria-hidden="true"></i>
                             </a>
                         {{ else }}
                             <span class="inline-flex items-center justify-center rounded-lg border border-border-primary-light dark:border-border-primary-dark bg-bg-tertiary-light dark:bg-bg-tertiary-dark px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-text-secondary-light dark:text-text-secondary-dark opacity-70 cursor-not-allowed select-none" aria-disabled="true" aria-label='{{ T "slidesUnavailable" | default "Unavailable" }}'>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                                    <path d="M14 2v6h6"/>
-                                    <path d="M9 14h6"/>
-                                </svg>
+                                <i class="cil-airplay text-[14px]" aria-hidden="true"></i>
+                            </span>
+                        {{ end }}
+                    </td>
+                    {{ end }}
+                    {{ if $showVideo }}
+                    <td class="px-4 py-3 align-top text-sm text-center">
+                        {{ if $videoURL }}
+                            <a href="{{ $videoURL }}" class="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-rose-500 to-orange-500 px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-white shadow-sm hover:from-rose-400 hover:to-orange-400 transition-all duration-150" target="_blank" rel="noopener noreferrer" aria-label='{{ T "viewVideo" | default "View video" }}'>
+                                <i class="cib-youtube text-[15px]" aria-hidden="true"></i>
+                            </a>
+                        {{ else }}
+                            <span class="inline-flex items-center justify-center rounded-lg border border-border-primary-light dark:border-border-primary-dark bg-bg-tertiary-light dark:bg-bg-tertiary-dark px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-text-secondary-light dark:text-text-secondary-dark opacity-70 cursor-not-allowed select-none" aria-disabled="true" aria-label='{{ T "videoUnavailable" | default "Unavailable" }}'>
+                                <i class="cib-youtube text-[15px]" aria-hidden="true"></i>
                             </span>
                         {{ end }}
                     </td>
@@ -164,6 +173,7 @@ Params:
         {{ $author := partial "presentation-author.html" . }}
         {{ $isPlaceholder := eq true .Params.placeholder }}
         {{ $slidesPath := .Params.slides }}
+        {{ $videoURL := .Params.video_url }}
         {{ $normalizedSlides := "" }}
         {{ $hasSlides := false }}
         {{ with $slidesPath }}
@@ -231,19 +241,24 @@ Params:
             <div class="mt-3">
                 {{ if and $slidesPath $hasSlides }}
                     <a href="{{ $slidesPath }}" class="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-emerald-500 to-cyan-500 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-white shadow-sm hover:from-emerald-400 hover:to-cyan-400 transition-all duration-150" target="_blank" rel="noopener noreferrer" aria-label='{{ T "viewSlides" | default "View slides" }}'>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                            <path d="M14 2v6h6"/>
-                            <path d="M12 18v-6m-3 3h6"/>
-                        </svg>
+                        <i class="cib-slides text-[16px]" aria-hidden="true"></i>
                     </a>
                 {{ else }}
                     <span class="inline-flex items-center justify-center rounded-lg border border-border-primary-light dark:border-border-primary-dark bg-bg-tertiary-light dark:bg-bg-tertiary-dark px-3 py-2 text-xs font-semibold uppercase tracking-wide text-text-secondary-light dark:text-text-secondary-dark opacity-70 cursor-not-allowed select-none" aria-disabled="true" aria-label='{{ T "slidesUnavailable" | default "Unavailable" }}'>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                            <path d="M14 2v6h6"/>
-                            <path d="M9 14h6"/>
-                        </svg>
+                        <i class="cib-slides text-[16px]" aria-hidden="true"></i>
+                    </span>
+                {{ end }}
+            </div>
+            {{ end }}
+            {{ if $showVideo }}
+            <div class="mt-2">
+                {{ if $videoURL }}
+                    <a href="{{ $videoURL }}" class="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-rose-500 to-orange-500 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-white shadow-sm hover:from-rose-400 hover:to-orange-400 transition-all duration-150" target="_blank" rel="noopener noreferrer" aria-label='{{ T "viewVideo" | default "View video" }}'>
+                        <i class="cib-youtube text-[18px]" aria-hidden="true"></i>
+                    </a>
+                {{ else }}
+                    <span class="inline-flex items-center justify-center rounded-lg border border-border-primary-light dark:border-border-primary-dark bg-bg-tertiary-light dark:bg-bg-tertiary-dark px-3 py-2 text-xs font-semibold uppercase tracking-wide text-text-secondary-light dark:text-text-secondary-dark opacity-70 cursor-not-allowed select-none" aria-disabled="true" aria-label='{{ T "videoUnavailable" | default "Unavailable" }}'>
+                        <i class="cib-youtube text-[18px]" aria-hidden="true"></i>
                     </span>
                 {{ end }}
             </div>

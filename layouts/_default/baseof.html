@@ -6,12 +6,12 @@
         <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} - {{ .Site.Title }}{{ end }}</title>
         
         <!-- Favicon here-->
-        <link rel="apple-touch-icon" sizes="180x180" href="{{ .Site.BaseURL }}favicon_io/apple-touch-icon.png">
+        <!-- <link rel="apple-touch-icon" sizes="180x180" href="{{ .Site.BaseURL }}favicon_io/apple-touch-icon.png">
         <link rel="icon" type="image/png" sizes="32x32" href="{{ .Site.BaseURL }}favicon_io/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="{{ .Site.BaseURL }}favicon_io/favicon-16x16.png">
-        <link rel="manifest" href="{{ .Site.BaseURL }}favicon_io/site.webmanifest">        
+        <link rel="manifest" href="{{ .Site.BaseURL }}favicon_io/site.webmanifest">         -->
         <link rel="preload" href="https://cdn.tailwindcss.com" as="script">
-        <link rel="preload" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" as="style">            
+        <link rel="stylesheet" href="/coreui-icons-2/css/all.css">
         <style>
             html, body {
                 background-color: #121212; 
@@ -49,7 +49,6 @@
         </style>
         
         <script src="https://cdn.tailwindcss.com"></script>
-        <link rel="stylesheet" type='text/css' href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
         <script>
             // Force dark mode as the only theme
             document.documentElement.classList.add('dark');
